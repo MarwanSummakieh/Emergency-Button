@@ -1,20 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, SafeAreaView, View } from "react-native";
+import LoginScreen from "./Login-component/Login";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+	return (
+		<>
+			<StatusBar style="auto" />
+			<SafeAreaView style={styles.topContainer} />
+			<SafeAreaView style={styles.mainContainer}>
+				<LoginScreen />
+			</SafeAreaView>
+		</>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+	// Keeps the color at the top of "SafeAreaView"
+	topContainer: {
+		flex: 0,
+		backgroundColor: "#34AAFC"
+	},
+
+	// Keeps the color at the bottom of "SafeAreaView"
+	mainContainer: {
+		flex: 1,
+		backgroundColor: "#760ACA"
+	}
 });
