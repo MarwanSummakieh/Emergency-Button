@@ -33,7 +33,7 @@ export default function App() {
 
 					<SafeAreaView style={styles.mainContainer}>
 						<Stack.Navigator>
-							<Stack.Screen name="FrontPage" component={FrontPage} options={{}}/>
+							<Stack.Screen name="FrontPage" component={FrontPage} options={{headerTransparent: true}}/>
 						</Stack.Navigator>
 					</SafeAreaView>
 				</NavigationContainer>
