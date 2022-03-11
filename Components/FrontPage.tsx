@@ -1,19 +1,32 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, Alert, Pressable } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import {
+	View,
+	Text,
+	StyleSheet,
+	Button,
+	Alert,
+	Pressable,
+	Dimensions
+} from "react-native";
+import {
+	createStackNavigator,
+	StackNavigationProp
+} from "@react-navigation/stack";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dimensions } from "react-native";
+import {} from "react-native";
 import LoginScreenGlobe from "../assets/svgs/LoginScreenGlobe";
 import { RootStackParamList } from "../App";
+import { useNavigation } from "@react-navigation/native";
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+export const windowWidth = Dimensions.get("window").width;
+export const windowHeight = Dimensions.get("window").height;
 
-const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
+export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
 const buttonTextColor = "#FFFFFF";
 
 export default function FrontPage() {
-	type mainScreenProp = StackNavigationProp<RootStackParamList, "FrontPage">;
+	const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
 	return (
 		<>
 			<View style={styles.container}>
@@ -41,7 +54,7 @@ export default function FrontPage() {
 
 				<Pressable
 					onPress={() => {
-						Alert.alert("REGISTER button pressed");
+						navigation.navigate("RegisterPage");
 					}}
 					style={styles.registerButton}
 				>
@@ -52,7 +65,7 @@ export default function FrontPage() {
 
 				<Pressable
 					onPress={() => {
-						Alert.alert("REGISTER button pressed");
+						navigation.navigate("LoginPage")
 					}}
 					style={styles.loginButton}
 				>

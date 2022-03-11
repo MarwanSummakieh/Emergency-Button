@@ -1,26 +1,29 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import {
-	createStackNavigator,
-} from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
-import FrontPage from "./Components/FrontPage";
+import FrontPage, { mainGradient } from "./Components/FrontPage";
+import RegisterPage from "./Components/RegisterPage";
+import { LinearGradient } from "expo-linear-gradient";
 
 export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
+	LoginPage: undefined;
 };
 
+interface GlobalContext {
+
+}
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
 	let [fontsLoaded] = useFonts({
-		"roboto_400": Roboto_400Regular
+		roboto_400: Roboto_400Regular
 	});
-	// const navigation = useNavigation<mainScreenProp>()
 
 	if (!fontsLoaded) {
 		return <AppLoading />;
@@ -33,7 +36,29 @@ export default function App() {
 
 					<SafeAreaView style={styles.mainContainer}>
 						<Stack.Navigator>
-							<Stack.Screen name="FrontPage" component={FrontPage} options={{headerTransparent: true}}/>
+							<Stack.Screen
+								name="FrontPage"
+								component={FrontPage}
+								options={{ headerTransparent: true, headerTitle: "" }}
+							/>
+							<Stack.Screen
+								name="RegisterPage"
+								component={RegisterPage}
+								options={{
+									headerTransparent: true,
+									// headerTitleStyle: {color: "#FFFF"},
+									// headerBackTitleStyle: {color: "#FFFF"},
+									
+									// headerBackImage: {tintColor: "#FFFF"},
+									headerTitle: "Register",
+									// headerBackground: () => (
+									// 	<LinearGradient
+									// 		colors={mainGradient}
+									// 		style={StyleSheet.absoluteFill}
+									// 	/>
+									// ),
+								}}
+							/>
 						</Stack.Navigator>
 					</SafeAreaView>
 				</NavigationContainer>
@@ -51,6 +76,6 @@ const styles = StyleSheet.create({
 	// Sets the color at the bottom of "SafeAreaView"
 	mainContainer: {
 		flex: 1,
-		backgroundColor: "#760ACA",
+		backgroundColor: "#FFFF"
 	}
 });
