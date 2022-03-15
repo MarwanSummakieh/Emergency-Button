@@ -65,7 +65,7 @@ export default function FrontPage() {
 
 				<Pressable
 					onPress={() => {
-						navigation.navigate("LoginPage")
+						navigation.navigate("LoginPage");
 					}}
 					style={styles.loginButton}
 				>
