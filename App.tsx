@@ -43,7 +43,8 @@ export default function App() {
 								component={RegisterPage}
 								options={{
 									headerTransparent: true,
-									headerTitle: "Register"
+									headerTitle: "Register",
+									headerTintColor: "#FFF"
 								}}
 							/>
 						</Stack.Navigator>

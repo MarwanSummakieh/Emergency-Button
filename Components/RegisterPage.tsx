@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
 import React from "react";
 import { mainGradient, windowHeight, windowWidth } from "./FrontPage";
 import { LinearGradient } from "expo-linear-gradient";
 import UserIcon from "../assets/svgs/registerPage/RegisterPageUserIcon";
 import MailIcon from "../assets/svgs/registerPage/RegisterPageMailIcon";
 import { KeyboardType } from "react-native";
+import { styles } from "../css/styles";
 
 export default function RegisterPage() {
 	const [name, onChangeName] = React.useState("");
@@ -39,44 +40,17 @@ export default function RegisterPage() {
 
 					{InputField(<MailIcon/>, onChangeMail, mail, "Your Email", "email-address")}
 				</View>
+				<Pressable
+					onPress={() => {
+						alert("REGISTERED")
+					}}
+					style={styles.registerButton}
+				>
+					<View style={styles.buttonContainer}>
+						<Text style={styles.buttonText}>REGISTER</Text>
+					</View>
+				</Pressable>
 			</LinearGradient>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	background: {
-		flex: 1,
-		height: windowHeight,
-		width: windowWidth
-	},
-	inputsContainer: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	inputField: {
-		borderColor: "transparent",
-		width: 300,
-		height: 50,
-		margin: 12,
-		borderWidth: 1,
-		padding: 10,
-		backgroundColor: "#FFFF",
-		// opacity: 0.8,
-		borderRadius: 20,
-		alignItems: "center",
-		flexDirection: "row",
-	},
-	inputFieldText: {
-		paddingLeft: 14
-	},
-	icon: {
-		color: "#34AAFC"
-	}
-});
