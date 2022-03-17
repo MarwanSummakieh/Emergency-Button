@@ -7,6 +7,7 @@ import {
   Alert,
   Pressable,
   Dimensions,
+  Linking,
 } from "react-native";
 import {
   createStackNavigator,
@@ -40,9 +41,13 @@ export default function FrontPage() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId:
-      "1022788426440-l8m9nh59vfgod48vhfkidai0n8lffn6q.apps.googleusercontent.com",
+      "57749978870-sd6cncj3o2fn1o1lr3dh5t4r58heos9b.apps.googleusercontent.com",
   });
-
+  const flowRedirect = async () => {
+    await
+      Linking.openURL("https://bprproject.b2clogin.com/bprproject.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_BPR_MAIN_SIGN_UP_IN&client_id=da024014-74e0-44a2-a1fe-54b73a02596a&nonce=defaultNonce&redirect_uri=https%3A%2F%2Fjwt.ms%2F&scope=openid&response_type=code&prompt=login"
+      );
+  };
   React.useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
@@ -51,6 +56,7 @@ export default function FrontPage() {
       const provider = new GoogleAuthProvider();
       const credential = provider.credential(id_token);
       signInWithCredential(auth, credential);
+      flowRedirect();
     }
   }, [response]);
   return (
@@ -88,15 +94,14 @@ export default function FrontPage() {
             <Text style={styles.buttonText}>REGISTER</Text>
           </View>
         </Pressable>
-
         <Pressable
           onPress={() => {
-            navigation.navigate("LoginPage");
+            flowRedirect();
           }}
           style={styles.loginButton}
         >
           <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>SIGN IN</Text>
+            <Text style={styles.buttonText}>SIGN IN WITH GOOGLE</Text>
           </View>
         </Pressable>
         <Button
