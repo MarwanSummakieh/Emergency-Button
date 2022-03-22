@@ -1,5 +1,7 @@
-import { StyleSheet } from "react-native";
-import { windowHeight, windowWidth } from "../Components/FrontPage";
+import { StyleSheet, Dimensions } from "react-native";
+
+export const windowWidth = Dimensions.get("window").width;
+export const windowHeight = Dimensions.get("window").height;
 
 const buttonTextColor = "#FFFFFF";
 
@@ -47,19 +49,50 @@ export const styles = StyleSheet.create({
 	},
 	icon: {
 		color: "#34AAFC"
-	},
+	}
+});
+
+export const registerPageStyles = StyleSheet.create({
 	registerButton: {
 		margin: 20,
 		padding: 5,
-
+		alignItems: "center",
 		textAlign: "center",
 		borderRadius: 70,
 		backgroundColor: "#34BEF6",
-		flex: 0,
-		alignItems: "center",
-		justifyContent: "center",
+		position: "absolute",
 		width: 200,
 		height: 54,
 		bottom: 100
+	},
+	globeImage: {
+		margin: 0,
+		position: "absolute",
+		top: "45%"
+	},
+	loginButton: {
+		fontFamily: "roboto_400",
+		color: "black",
+		padding: 5,
+		alignItems: "center",
+		borderRadius: 70,
+		borderColor: buttonTextColor,
+		borderWidth: 1,
+		backgroundColor: "transparent",
+		position: "absolute",
+		width: 200,
+		height: 54,
+		bottom: 50
+	},
+	introText: {
+		fontFamily: "roboto_400",
+		margin: 0,
+		position: "absolute",
+		top: "10%",
+		color: buttonTextColor,
+		textAlign: "left",
+		paddingRight: 100,
+		paddingLeft: 20,
+		fontSize: 30
 	}
 });
