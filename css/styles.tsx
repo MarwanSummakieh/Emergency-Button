@@ -16,7 +16,8 @@ export const styles = StyleSheet.create({
 	buttonContainer: {
 		justifyContent: "center", //Centered horizontally
 		alignItems: "center", //Centered vertically
-		flex: 1
+		flex: 1,
+		flexDirection: "row",
 	},
 	container: {
 		flex: 1,
@@ -51,6 +52,19 @@ export const styles = StyleSheet.create({
 	},
 	icon: {
 		color: "#34AAFC"
+	},
+	googleButton: {
+		borderColor: "transparent",
+		width: 300,
+		height: 50,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+		backgroundColor: "transparent",
+		// opacity: 0.8,
+		borderRadius: 20,
+		alignItems: "center",
+		flexDirection: "row"
 	}
 });
 
@@ -63,7 +77,7 @@ export const registerPageStyles = StyleSheet.create({
 		borderRadius: 70,
 		backgroundColor: "#34BEF6",
 		position: "absolute",
-		width: 200,
+		width: 300,
 		height: 54,
 		bottom: 100
 	},
@@ -80,9 +94,9 @@ export const registerPageStyles = StyleSheet.create({
 		borderRadius: 70,
 		borderColor: buttonTextColor,
 		borderWidth: 1,
-		backgroundColor: "transparent",
+		// backgroundColor: "white",
 		position: "absolute",
-		width: 200,
+		width: 300,
 		height: 54,
 		bottom: 50
 	},
@@ -96,5 +110,17 @@ export const registerPageStyles = StyleSheet.create({
 		paddingRight: 100,
 		paddingLeft: 20,
 		fontSize: 30
+	},
+	googleRegisterButton: {
+		margin: 20,
+		padding: 5,
+		alignItems: "center",
+		textAlign: "center",
+		borderRadius: 70,
+		backgroundColor: "#34BEF6",
+		position: "absolute",
+		width: 300,
+		height: 54,
+		bottom: 500
 	}
 });

@@ -7,12 +7,15 @@ import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
 import GoogleLogin from "./Components/GoogleLogin";
+import LoginPage from "./Components/LoginPage";
 
 export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
 	LoginPage: undefined;
 };
+
+
 
 interface GlobalContext {}
 
@@ -25,6 +28,7 @@ export default function App() {
 
 	if (!fontsLoaded) {
 		return <AppLoading />;
+		
 	} else {
 		return (
 			<>
@@ -52,7 +56,17 @@ export default function App() {
 									headerTintColor: "#FFF"
 								}}
 							/>
+							<Stack.Screen
+								name="LoginPage"
+								component={LoginPage}
+								options={{
+									headerTransparent: true,
+									headerTitle: "Log In",
+									headerTintColor: "#FFF"
+								}}
+							/>
 						</Stack.Navigator>
+
 					</SafeAreaView>
 				</NavigationContainer>
 			</>

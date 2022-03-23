@@ -8,11 +8,8 @@ import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
 import { firebaseApp, firebaseAuth } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
 
 export default function RegisterPage() {
-	const [name, onChangeName] = React.useState("");
-	const [username, onChangeUsername] = React.useState("");
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
 
@@ -53,21 +50,6 @@ export default function RegisterPage() {
 				style={styles.background}
 			>
 				<View style={styles.inputsContainer}>
-					<Pressable style={registerPageStyles.googleRegisterButton}>
-						<View style={styles.buttonContainer}>
-							<GoogleLogo />
-							<Text style={styles.buttonText}>
-								Sign in with Google
-							</Text>
-						</View>
-					</Pressable>
-					<View
-						style={{
-							borderBottomColor: "white",
-							borderBottomWidth: 100,
-						}}
-					/>
-					{/* One of these fields could probably be removed */}
 					{InputField(
 						<MailIcon />,
 						onChangeMail,
@@ -83,29 +65,14 @@ export default function RegisterPage() {
 						"Your Password",
 						"default"
 					)}
-					{/* {InputField(
-						<UserIcon />,
-						onChangeName,
-						name,
-						"Your Name",
-						"default"
-					)}
-					{InputField(
-						<UserIcon />,
-						onChangeUsername,
-						username,
-						"Your Username",
-						"default"
-					)} */}
 					<Pressable
 						onPress={() => {
-							signUp();
-							alert("REGISTERED");
+							alert("Sign in Successful");
 						}}
 						style={registerPageStyles.registerButton}
 					>
 						<View style={styles.buttonContainer}>
-							<Text style={styles.buttonText}>REGISTER</Text>
+							<Text style={styles.buttonText}>Sign in</Text>
 						</View>
 					</Pressable>
 				</View>

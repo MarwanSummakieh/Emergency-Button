@@ -4,8 +4,10 @@ import Svg, { SvgProps, Defs, Rect, G, Use, Path } from "react-native-svg"
 
 const SvgComponent = (props: SvgProps) => (
   <Svg
-    width={46}
-    height={46}
+    width={60}
+    height={60}
+    viewBox="0 0 46 46"
+    
     {...props}
   >
     <Defs>
