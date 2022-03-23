@@ -6,6 +6,7 @@ import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
+import GoogleLogin from "./Components/GoogleLogin";
 
 export type RootStackParamList = {
 	FrontPage: undefined;
@@ -27,6 +28,10 @@ export default function App() {
 	} else {
 		return (
 			<>
+
+				{/* <GoogleLogin/> */}
+
+
 				<NavigationContainer>
 					<StatusBar style="auto" />
 					<SafeAreaView style={styles.topContainer} />

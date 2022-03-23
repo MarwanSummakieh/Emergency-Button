@@ -3,6 +3,8 @@ import { StyleSheet, Dimensions } from "react-native";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 
+export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
+
 const buttonTextColor = "#FFFFFF";
 
 export const styles = StyleSheet.create({
