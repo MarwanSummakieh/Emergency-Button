@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import { Text, View, TextInput, Pressable } from "react-native";
 import React from "react";
 import { mainGradient, registerPageStyles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
@@ -6,22 +6,49 @@ import UserIcon from "../assets/image_components/registerPage/RegisterPageUserIc
 import MailIcon from "../assets/image_components/registerPage/RegisterPageMailIcon";
 import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
-import { firebaseApp, firebaseAuth } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from "../firebaseConfig";
+import {
+	createUserWithEmailAndPassword,
+	GoogleAuthProvider,
+	signInWithCredential
+} from "firebase/auth";
+import * as Google from "expo-auth-session/providers/google";
 import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
+import { save } from "../authentication";
 
 export default function RegisterPage() {
-	const [name, onChangeName] = React.useState("");
-	const [username, onChangeUsername] = React.useState("");
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
+
+	const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+		// androidClientId:
+		// 	"57749978870-aakpp4mgb52pb3fhv7v7v1l51on9j6ar.apps.googleusercontent.com",
+		// iosClientId:
+		// 	"57749978870-bqjp52uk892ah7rka3496nv6267l5vd2.apps.googleusercontent.com",
+		expoClientId:
+			"57749978870-p1galeu9ke5jkenm3l05i3gvsqukefe8.apps.googleusercontent.com",
+		selectAccount: true
+	});
+
+	React.useEffect(() => {
+		if (response?.type === "success") {
+			const IDtoken = response.params.id_token;
+			const auth = firebaseAuth;
+
+			const credential = GoogleAuthProvider.credential(IDtoken);
+			signInWithCredential(auth, credential).then((userCredential) => {
+				save("userUID", userCredential.user.uid);
+			});
+		}
+	}, [response]);
 
 	function InputField(
 		icon: JSX.Element,
 		onChangeFunc: React.Dispatch<React.SetStateAction<string>>,
 		value: any,
 		placeholder: string,
-		keyboardType: KeyboardType
+		keyboardType: KeyboardType,
+		secureText: boolean = false
 	) {
 		return (
 			<View style={styles.inputField}>
@@ -30,6 +57,7 @@ export default function RegisterPage() {
 					style={styles.inputFieldText}
 					onChangeText={onChangeFunc}
 					value={value}
+					secureTextEntry={secureText}
 					placeholder={placeholder}
 					keyboardType={keyboardType}
 				/>
@@ -37,10 +65,13 @@ export default function RegisterPage() {
 		);
 	}
 
-	function signUp() {
+	function signUpWithEmail() {
 		if (password != "" && mail != "") {
 			createUserWithEmailAndPassword(firebaseAuth, mail, password).then(
-				(response) => console.log(response)
+				(response) => {
+					console.log(response);
+					response;
+				}
 			);
 		}
 	}
@@ -53,20 +84,55 @@ export default function RegisterPage() {
 				style={styles.background}
 			>
 				<View style={styles.inputsContainer}>
-					<Pressable style={registerPageStyles.googleRegisterButton}>
+					<Pressable
+						onPress={() => {
+							promptAsync();
+						}}
+						style={registerPageStyles.googleRegisterButton}
+					>
 						<View style={styles.buttonContainer}>
 							<GoogleLogo />
-							<Text style={styles.buttonText}>
+							<Text
+								style={{
+									color: "black",
+									fontSize: 20,
+									fontFamily: "roboto_400"
+								}}
+							>
 								Sign in with Google
 							</Text>
 						</View>
 					</Pressable>
 					<View
-						style={{
-							borderBottomColor: "white",
-							borderBottomWidth: 100,
-						}}
-					/>
+						style={{ flexDirection: "row", alignItems: "center" }}
+					>
+						<View
+							style={{
+								flex: 1,
+								height: 1,
+								backgroundColor: "lightgrey"
+							}}
+						/>
+						<View>
+							<Text
+								style={{
+									width: 50,
+									textAlign: "center",
+									color: "lightgrey"
+								}}
+							>
+								OR
+							</Text>
+						</View>
+						<View
+							style={{
+								flex: 1,
+								height: 1,
+								backgroundColor: "lightgrey"
+							}}
+						/>
+					</View>
+
 					{/* One of these fields could probably be removed */}
 					{InputField(
 						<MailIcon />,
@@ -81,7 +147,8 @@ export default function RegisterPage() {
 						onChangePassword,
 						password,
 						"Your Password",
-						"default"
+						"default",
+						true
 					)}
 					{/* {InputField(
 						<UserIcon />,
@@ -99,8 +166,9 @@ export default function RegisterPage() {
 					)} */}
 					<Pressable
 						onPress={() => {
-							signUp();
+							signUpWithEmail();
 							alert("REGISTERED");
+							// navigation.navigate("MainScreen")	//Or whatever we decide to call it
 						}}
 						style={registerPageStyles.registerButton}
 					>

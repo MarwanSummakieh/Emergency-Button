@@ -4,15 +4,19 @@ import React from "react";
 import { StyleSheet, View, Text, Image, Button } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
+import { authProvider, firebaseApp, firebaseAuth } from "../firebaseConfig";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
 
 WebBrowser.maybeCompleteAuthSession();
 
+
+// ONLY FOR TESTING
 export default function GoogleLogin() {
-	const [accessToken, setAccessToken] = React.useState();
+	const [IDToken, setIDToken] = React.useState("");
 	const [userInfo, setUserInfo] = React.useState();
 	const [message, setMessage] = React.useState();
 
-	const [request, response, promptAsync] = Google.useAuthRequest({
+	const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
 		// androidClientId:
 		// 	"57749978870-aakpp4mgb52pb3fhv7v7v1l51on9j6ar.apps.googleusercontent.com",
 		// iosClientId:
@@ -23,17 +27,29 @@ export default function GoogleLogin() {
 	});
 
 	React.useEffect(() => {
-		setMessage(JSON.stringify(response));
 		if (response?.type === "success") {
-			setAccessToken(response.authentication.accessToken);
+			// const { id_token } = response.params;
+
+			const IDtoken = response.params.id_token;
+			const auth = firebaseAuth;
+
+			const credential = GoogleAuthProvider.credential(IDtoken);
+			// console.log(response);
+			signInWithCredential(auth, credential).then( (userCredential) => {
+				console.log(userCredential)
+			})
 		}
+		// setMessage(JSON.stringify(response));
+		// if (response?.type === "success") {
+		// 	setAccessToken(response.authentication.accessToken);
+		// }
 	}, [response]);
 
 	async function getUserData() {
 		let userInfoResponse = await fetch(
 			"https://www.googleapis.com/userinfo/v2/me",
 			{
-				headers: { Authorization: `Bearer ${accessToken}` }
+				headers: { Authorization: `Bearer ${IDToken}` }
 			}
 		);
 
@@ -59,19 +75,15 @@ export default function GoogleLogin() {
 
 	return (
 		<View style={styles.container}>
-			{showUserInfo()}
+			{/* {showUserInfo()} */}
 			<Button
-				title={accessToken ? "Get User Data" : "Login"}
-				onPress={
-					accessToken
-						? getUserData
-						: () => {
-								promptAsync({
-									useProxy: true,
-									showInRecents: true
-								});
-						  }
-				}
+				title={"Login"}
+				onPress={() => {
+					promptAsync({
+						useProxy: true,
+						showInRecents: true
+					});
+				}}
 			/>
 			<StatusBar style="auto" />
 		</View>

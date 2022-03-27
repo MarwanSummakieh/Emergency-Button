@@ -48,7 +48,8 @@ export const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	inputFieldText: {
-		paddingLeft: 14
+		paddingLeft: 14,
+		width: 300
 	},
 	icon: {
 		color: "#34AAFC"
@@ -117,7 +118,7 @@ export const registerPageStyles = StyleSheet.create({
 		alignItems: "center",
 		textAlign: "center",
 		borderRadius: 70,
-		backgroundColor: "#34BEF6",
+		backgroundColor: "white",
 		position: "absolute",
 		width: 300,
 		height: 54,

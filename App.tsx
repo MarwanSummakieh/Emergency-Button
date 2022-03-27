@@ -1,23 +1,19 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
-import GoogleLogin from "./Components/GoogleLogin";
-import LoginPage from "./Components/LoginPage";
+import SignInPage from "./Components/SignInPage";
+import 'dotenv/config'
 
 export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
-	LoginPage: undefined;
+	SignInPage: undefined;
 };
-
-
-
-interface GlobalContext {}
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -28,14 +24,9 @@ export default function App() {
 
 	if (!fontsLoaded) {
 		return <AppLoading />;
-		
 	} else {
 		return (
 			<>
-
-				{/* <GoogleLogin/> */}
-
-
 				<NavigationContainer>
 					<StatusBar style="auto" />
 					<SafeAreaView style={styles.topContainer} />
@@ -45,7 +36,10 @@ export default function App() {
 							<Stack.Screen
 								name="FrontPage"
 								component={FrontPage}
-								options={{ headerTransparent: true, headerTitle: "" }}
+								options={{
+									headerTransparent: true,
+									headerTitle: ""
+								}}
 							/>
 							<Stack.Screen
 								name="RegisterPage"
@@ -57,16 +51,15 @@ export default function App() {
 								}}
 							/>
 							<Stack.Screen
-								name="LoginPage"
-								component={LoginPage}
+								name="SignInPage"
+								component={SignInPage}
 								options={{
 									headerTransparent: true,
-									headerTitle: "Log In",
+									headerTitle: "Sign In",
 									headerTintColor: "#FFF"
 								}}
 							/>
 						</Stack.Navigator>
-
 					</SafeAreaView>
 				</NavigationContainer>
 			</>

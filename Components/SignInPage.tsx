@@ -6,10 +6,11 @@ import UserIcon from "../assets/image_components/registerPage/RegisterPageUserIc
 import MailIcon from "../assets/image_components/registerPage/RegisterPageMailIcon";
 import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
-import { firebaseApp, firebaseAuth } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from "../firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { save } from "../authentication";
 
-export default function RegisterPage() {
+export default function SignInPage() {
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
 
@@ -32,14 +33,6 @@ export default function RegisterPage() {
 				/>
 			</View>
 		);
-	}
-
-	function signUp() {
-		if (password != "" && mail != "") {
-			createUserWithEmailAndPassword(firebaseAuth, mail, password).then(
-				(response) => console.log(response)
-			);
-		}
 	}
 
 	return (
@@ -67,7 +60,26 @@ export default function RegisterPage() {
 					)}
 					<Pressable
 						onPress={() => {
-							alert("Sign in Successful");
+							if (mail !== "" || password !== "") {
+								signInWithEmailAndPassword(
+									firebaseAuth,
+									mail,
+									password
+								)
+									.then((credential) => {
+										save("userID", credential.user.uid);
+										save(
+											"userRefreshToken",
+											credential.user.refreshToken
+										);
+										alert("Sign in Successful");
+										// navigate("MainScreen")
+									})
+									.catch((error) => {
+										alert(error.message);
+										//Whatever else when wrong credentials are used.
+									});
+							}
 						}}
 						style={registerPageStyles.registerButton}
 					>
