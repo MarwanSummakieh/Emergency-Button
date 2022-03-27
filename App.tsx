@@ -7,7 +7,6 @@ import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
 import SignInPage from "./Components/SignInPage";
-import 'dotenv/config'
 
 export type RootStackParamList = {
 	FrontPage: undefined;
