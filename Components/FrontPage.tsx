@@ -78,6 +78,12 @@ export default function FrontPage() {
 						</Text>
 					</View>
 				</Pressable>
+				<Pressable
+					onPress = {() => {
+						navigation.navigate("MapViewComponent");
+					}}>
+					<Text>map</Text>
+				</Pressable>
 			</View>
 		</>
 	);

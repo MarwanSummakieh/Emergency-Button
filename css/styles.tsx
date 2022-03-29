@@ -65,6 +65,11 @@ export const styles = StyleSheet.create({
 		borderRadius: 20,
 		alignItems: "center",
 		flexDirection: "row"
+	},
+	map: {
+		width: 300,
+		height: 300,
+		borderRadius: 20
 	}
 });
 

@@ -8,11 +8,13 @@ import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
 import GoogleLogin from "./Components/GoogleLogin";
 import LoginPage from "./Components/LoginPage";
+import MapViewComponent from "./Components/MapViewComponent";
 
 export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
 	LoginPage: undefined;
+	MapViewComponent: undefined;
 };
 
 
@@ -62,6 +64,15 @@ export default function App() {
 								options={{
 									headerTransparent: true,
 									headerTitle: "Log In",
+									headerTintColor: "#FFF"
+								}}
+							/>
+								<Stack.Screen
+								name="MapViewComponent"
+								component={MapViewComponent}
+								options={{
+									headerTransparent: true,
+									headerTitle: "Map",
 									headerTintColor: "#FFF"
 								}}
 							/>
