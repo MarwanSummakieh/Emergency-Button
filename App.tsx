@@ -6,7 +6,6 @@ import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
-import EmergencyButton from "./Components/Navigation/Screens/EmergencyButtonScreen";
 import MainContainer from "./Components/Navigation/MainContainer";
 import GoogleLogin from "./Components/GoogleLogin";
 import LoginPage from "./Components/LoginPage";
@@ -20,6 +19,7 @@ export type RootStackParamList = {
 		Emergency: undefined;
 		Map: undefined;
 	};
+	MapViewComponent: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
