@@ -1,31 +1,42 @@
 import React from "react";
-import {
-	View,
-	Text,
-	StyleSheet,
-	Button,
-	Alert,
-	Pressable,
-	Dimensions
-} from "react-native";
-import {
-	createStackNavigator,
-	StackNavigationProp
-} from "@react-navigation/stack";
+import { View, Text, Pressable } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as WebBrowser from "expo-web-browser";
+
 import { LinearGradient } from "expo-linear-gradient";
 import {} from "react-native";
-import LoginScreenGlobe from "../assets/svgs/LoginScreenGlobe";
+import LoginScreenGlobe from "../assets/image_components/LoginScreenGlobe";
 import { RootStackParamList } from "../App";
 import { useNavigation } from "@react-navigation/native";
+import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
 
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
+import { styles, registerPageStyles, mainGradient } from "../css/styles";
 
-export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
-const buttonTextColor = "#FFFFFF";
+WebBrowser.maybeCompleteAuthSession();
 
 export default function FrontPage() {
 	const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+	const [accessToken, setAccessToken] = React.useState();
+	const [userInfo, setUserInfo] = React.useState();
+	const [message, setMessage] = React.useState();
+
+	// const [request, response, promptAsync] = Google.useAuthRequest({
+	// 	androidClientId:
+	// 		"57749978870-aakpp4mgb52pb3fhv7v7v1l51on9j6ar.apps.googleusercontent.com",
+	// 	iosClientId:
+	// 		"57749978870-bqjp52uk892ah7rka3496nv6267l5vd2.apps.googleusercontent.com",
+	// 	expoClientId:
+	// 		"57749978870-p1galeu9ke5jkenm3l05i3gvsqukefe8.apps.googleusercontent.com",
+	// 	selectAccount: true
+	// });
+
+	// React.useEffect(() => {
+	// 	setMessage(JSON.stringify(response));
+	// 	if (response?.type === "success") {
+	// 		setAccessToken(response.authentication.accessToken);
+	// 	}
+	// }, [response]);
 
 	return (
 		<>
@@ -36,29 +47,21 @@ export default function FrontPage() {
 					style={styles.background}
 				/>
 
-				<Text style={styles.introText}>
-					Salvatio Push is a social rescue system enabling fast response to
-					danger
+				<Text style={registerPageStyles.introText}>
+					Salvatio Push is a social rescue system enabling fast
+					response to danger
 				</Text>
 
-				{/*
-					Better picture quality than png approach bellow. 
-					Also should be easier to resize if needed
-					*/}
-				<LoginScreenGlobe style={styles.globeImage} />
-
-				{/* <Image
-						source={require("../assets/images/LoginScreenGlobe.png")}
-						style={styles.globeImage}
-					/> */}
+				<LoginScreenGlobe style={registerPageStyles.globeImage} />
 
 				<Pressable
 					onPress={() => {
 						navigation.navigate("RegisterPage");
 					}}
-					style={styles.registerButton}
+					style={registerPageStyles.registerButton}
 				>
 					<View style={styles.buttonContainer}>
+						
 						<Text style={styles.buttonText}>REGISTER</Text>
 					</View>
 				</Pressable>
@@ -67,79 +70,21 @@ export default function FrontPage() {
 					onPress={() => {
 						navigation.navigate("LoginPage");
 					}}
-					style={styles.loginButton}
+					style={registerPageStyles.loginButton}
 				>
 					<View style={styles.buttonContainer}>
-						<Text style={styles.buttonText}>SIGN IN</Text>
+						<Text style={styles.buttonText}>
+							SIGN IN 
+						</Text>
 					</View>
+				</Pressable>
+				<Pressable
+					onPress = {() => {
+						navigation.navigate("MapViewComponent");
+					}}>
+					<Text>map</Text>
 				</Pressable>
 			</View>
 		</>
 	);
 }
-
-// I'm crap at CSS so feel free to fix this up.
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	background: {
-		flex: 1,
-		height: windowHeight,
-		width: windowWidth
-	},
-	globeImage: {
-		margin: 0,
-		position: "absolute",
-		top: "45%"
-	},
-	registerButton: {
-		margin: 20,
-		padding: 5,
-		alignItems: "center",
-		textAlign: "center",
-		borderRadius: 70,
-		backgroundColor: "#34BEF6",
-		position: "absolute",
-		width: 200,
-		height: 54,
-		bottom: 100
-	},
-	loginButton: {
-		fontFamily: "roboto_400",
-		color: "black",
-		padding: 5,
-		alignItems: "center",
-		borderRadius: 70,
-		borderColor: buttonTextColor,
-		borderWidth: 1,
-		backgroundColor: "transparent",
-		position: "absolute",
-		width: 200,
-		height: 54,
-		bottom: 50
-	},
-	introText: {
-		fontFamily: "roboto_400",
-		margin: 0,
-		position: "absolute",
-		top: "10%",
-		color: buttonTextColor,
-		textAlign: "left",
-		paddingRight: 100,
-		paddingLeft: 20,
-		fontSize: 30
-	},
-	buttonText: {
-		fontFamily: "roboto_400",
-		color: buttonTextColor,
-		fontSize: 20
-	},
-	buttonContainer: {
-		justifyContent: "center", //Centered horizontally
-		alignItems: "center", //Centered vertically
-		flex: 1
-	}
-});
