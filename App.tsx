@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
@@ -9,17 +9,20 @@ import RegisterPage from "./Components/RegisterPage";
 import MainContainer from "./Components/Navigation/MainContainer";
 import SignInPage from "./Components/SignInPage";
 
+
+// These are for type checking the navigation.
+// See https://reactnavigation.org/docs/typescript/
 export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
-	LoginPage: undefined;
-	MainScreenPage: {
-		Emergency: undefined;
-		Map: undefined;
-	};
-	MapViewComponent: undefined;
 	SignInPage: undefined;
+	MainScreenPage: NavigatorScreenParams<MainNavigationParams> // https://reactnavigation.org/docs/typescript/#nesting-navigators
 };
+
+export type MainNavigationParams = {
+	Emergency: undefined;
+	Map: undefined
+}
 
 const Stack = createStackNavigator<RootStackParamList>();
 
