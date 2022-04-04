@@ -1,7 +1,7 @@
 // import * as firebase from 'firebase';
 
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 // import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -14,6 +14,7 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp)
+firebaseAuth.useDeviceLanguage()
+const authProvider = new GoogleAuthProvider()
 
-
-export { firebaseApp, firebaseAuth };
+export { firebaseApp, firebaseAuth, authProvider };

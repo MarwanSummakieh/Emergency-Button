@@ -1,15 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
 import MainContainer from "./Components/Navigation/MainContainer";
-import GoogleLogin from "./Components/GoogleLogin";
-import LoginPage from "./Components/LoginPage";
-import MapViewComponent from "./Components/MapViewComponent";
+import SignInPage from "./Components/SignInPage";
 
 export type RootStackParamList = {
 	FrontPage: undefined;
@@ -20,6 +18,7 @@ export type RootStackParamList = {
 		Map: undefined;
 	};
 	MapViewComponent: undefined;
+	SignInPage: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -34,8 +33,6 @@ export default function App() {
 	} else {
 		return (
 			<>
-				{/* <MainContainer/> */}
-
 				<NavigationContainer>
 					<StatusBar style="auto" />
 					<SafeAreaView style={styles.topContainer} />
@@ -60,12 +57,20 @@ export default function App() {
 								}}
 							/>
 							<Stack.Screen
+								name="SignInPage"
+								component={SignInPage}
+								options={{
+									headerTransparent: true,
+									headerTitle: "Sign In",
+									headerTintColor: "#FFF"
+								}}
+							/>
+							<Stack.Screen
 								name="MainScreenPage"
 								component={MainContainer}
 								options={{
 									headerTransparent: true,
 									headerTitle: "",
-									headerTintColor: "#FFF"
 								}}
 							/>
 						</Stack.Navigator>

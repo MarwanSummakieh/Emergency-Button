@@ -39,21 +39,18 @@ export default function FrontPage() {
 					style={registerPageStyles.registerButton}
 				>
 					<View style={styles.buttonContainer}>
-						
 						<Text style={styles.buttonText}>REGISTER</Text>
 					</View>
 				</Pressable>
 
 				<Pressable
 					onPress={() => {
-						navigation.navigate("LoginPage");
+						navigation.navigate("SignInPage");
 					}}
 					style={registerPageStyles.loginButton}
 				>
 					<View style={styles.buttonContainer}>
-						<Text style={styles.buttonText}>
-							SIGN IN 
-						</Text>
+						<Text style={styles.buttonText}>SIGN IN</Text>
 					</View>
 				</Pressable>
 				<Pressable
