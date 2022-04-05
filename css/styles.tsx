@@ -1,5 +1,9 @@
-import { StyleSheet } from "react-native";
-import { windowHeight, windowWidth } from "../Components/FrontPage";
+import { StyleSheet, Dimensions } from "react-native";
+
+export const windowWidth = Dimensions.get("window").width;
+export const windowHeight = Dimensions.get("window").height;
+
+export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
 
 const buttonTextColor = "#FFFFFF";
 
@@ -12,7 +16,8 @@ export const styles = StyleSheet.create({
 	buttonContainer: {
 		justifyContent: "center", //Centered horizontally
 		alignItems: "center", //Centered vertically
-		flex: 1
+		flex: 1,
+		flexDirection: "row",
 	},
 	container: {
 		flex: 1,
@@ -43,23 +48,85 @@ export const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	inputFieldText: {
-		paddingLeft: 14
+		paddingLeft: 14,
+		width: 300
 	},
 	icon: {
 		color: "#34AAFC"
 	},
+	googleButton: {
+		borderColor: "transparent",
+		width: 300,
+		height: 50,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+		backgroundColor: "transparent",
+		// opacity: 0.8,
+		borderRadius: 20,
+		alignItems: "center",
+		flexDirection: "row"
+	},
+	map: {
+		width: 300,
+		height: 300,
+		borderRadius: 20
+	}
+});
+
+export const registerPageStyles = StyleSheet.create({
 	registerButton: {
 		margin: 20,
 		padding: 5,
-
+		alignItems: "center",
 		textAlign: "center",
 		borderRadius: 70,
 		backgroundColor: "#34BEF6",
-		flex: 0,
-		alignItems: "center",
-		justifyContent: "center",
-		width: 200,
+		position: "absolute",
+		width: 300,
 		height: 54,
 		bottom: 100
+	},
+	globeImage: {
+		margin: 0,
+		position: "absolute",
+		top: "45%"
+	},
+	loginButton: {
+		fontFamily: "roboto_400",
+		color: "black",
+		padding: 5,
+		alignItems: "center",
+		borderRadius: 70,
+		borderColor: buttonTextColor,
+		borderWidth: 1,
+		// backgroundColor: "white",
+		position: "absolute",
+		width: 300,
+		height: 54,
+		bottom: 50
+	},
+	introText: {
+		fontFamily: "roboto_400",
+		margin: 0,
+		position: "absolute",
+		top: "10%",
+		color: buttonTextColor,
+		textAlign: "left",
+		paddingRight: 100,
+		paddingLeft: 20,
+		fontSize: 30
+	},
+	googleRegisterButton: {
+		margin: 20,
+		padding: 5,
+		alignItems: "center",
+		textAlign: "center",
+		borderRadius: 70,
+		backgroundColor: "white",
+		position: "absolute",
+		width: 300,
+		height: 54,
+		bottom: 500
 	}
 });
