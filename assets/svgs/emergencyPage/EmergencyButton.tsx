@@ -12,7 +12,7 @@ import Svg, {
 
 const SvgComponent = (props: SvgProps) => (
   <Svg width={360} height={398} fill="none" {...props}>
-    <G filter="url(#a)">
+    <G clipPath="url(#a)">
       <Circle cx={178} cy={187} r={142} fill="#F7FAFD" />
       <Circle
         cx={178}
@@ -23,7 +23,7 @@ const SvgComponent = (props: SvgProps) => (
         strokeWidth={0.5}
       />
     </G>
-    <G filter="url(#c)">
+    <G clipPath="url(#c)">
       <Path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -37,7 +37,7 @@ const SvgComponent = (props: SvgProps) => (
         strokeWidth={0.5}
       />
     </G>
-    <G filter="url(#e)">
+    <G clipPath="url(#e)">
       <Path
         fillRule="evenodd"
         clipRule="evenodd"

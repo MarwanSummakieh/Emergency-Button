@@ -14,8 +14,8 @@ export type RootStackParamList = {
   RegisterPage: undefined;
   LoginPage: undefined;
   MainScreenPage: {
-	  Emergency: undefined,
-	  Map: undefined
+    Emergency: undefined;
+    Map: undefined;
   };
 };
 
@@ -33,9 +33,9 @@ export default function App() {
   } else {
     return (
       <>
-        {/* <MainContainer/> */}
+        <MainContainer />
 
-        <NavigationContainer>
+        {/* <NavigationContainer>
           <StatusBar style="auto" />
           <SafeAreaView style={styles.topContainer} />
 
@@ -66,7 +66,7 @@ export default function App() {
               />
             </Stack.Navigator>
           </SafeAreaView>
-        </NavigationContainer>
+        </NavigationContainer> */}
       </>
     );
   }
