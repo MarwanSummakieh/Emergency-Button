@@ -38,7 +38,8 @@ export default function RegisterPage() {
 
 			const credential = GoogleAuthProvider.credential(IDtoken);
 			signInWithCredential(auth, credential).then((userCredential) => {
-				save("userUID", userCredential.user.uid);
+				save(userID, userCredential.user.uid);
+				save(userRefreshToken, userCredential.user.refreshToken)
 			});
 		}
 	}, [response]);
