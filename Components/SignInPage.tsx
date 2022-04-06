@@ -9,10 +9,16 @@ import { styles } from "../css/styles";
 import { firebaseAuth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { save } from "../authentication";
+import { userID, userRefreshToken } from "../consts";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../App";
 
 export default function SignInPage() {
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
+
+	const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
 	function InputField(
 		icon: JSX.Element,
@@ -67,13 +73,17 @@ export default function SignInPage() {
 									password
 								)
 									.then((credential) => {
-										save("userID", credential.user.uid);
+										save(userID, credential.user.uid);
 										save(
-											"userRefreshToken",
+											userRefreshToken,
 											credential.user.refreshToken
 										);
 										alert("Sign in Successful");
-										// navigate("MainScreen")
+										console.log(credential);
+
+										navigation.navigate("MainScreenPage", {
+											screen: "Emergency"
+										});
 									})
 									.catch((error) => {
 										alert(error.message);

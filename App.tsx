@@ -1,6 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView } from "react-native";
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native";
+import {
+	NavigationContainer,
+	NavigatorScreenParams
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
@@ -8,7 +11,8 @@ import FrontPage from "./Components/FrontPage";
 import RegisterPage from "./Components/RegisterPage";
 import MainContainer from "./Components/Navigation/MainContainer";
 import SignInPage from "./Components/SignInPage";
-
+import { getValueFor } from "./authentication";
+import { userID } from "./consts";
 
 // These are for type checking the navigation.
 // See https://reactnavigation.org/docs/typescript/
@@ -16,17 +20,27 @@ export type RootStackParamList = {
 	FrontPage: undefined;
 	RegisterPage: undefined;
 	SignInPage: undefined;
-	MainScreenPage: NavigatorScreenParams<MainNavigationParams> // https://reactnavigation.org/docs/typescript/#nesting-navigators
+	MainScreenPage: NavigatorScreenParams<MainNavigationParams>; // https://reactnavigation.org/docs/typescript/#nesting-navigators
 };
 
 export type MainNavigationParams = {
 	Emergency: undefined;
-	Map: undefined
-}
+	Map: undefined;
+};
+
+// Navigation could be refactored using this approach 
+// https://reactnavigation.org/docs/connecting-navigation-prop/
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
+
+	let userIsAuthenticated = () => {
+		if (getValueFor(userID) !== false) {
+			return true;
+		} else return false;
+	};
+
 	let [fontsLoaded] = useFonts({
 		roboto_400: Roboto_400Regular
 	});
@@ -73,7 +87,7 @@ export default function App() {
 								component={MainContainer}
 								options={{
 									headerTransparent: true,
-									headerTitle: "",
+									headerTitle: ""
 								}}
 							/>
 						</Stack.Navigator>
