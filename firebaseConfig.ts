@@ -16,7 +16,12 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
-await setPersistence(firebaseAuth, browserLocalPersistence)
+
+const persistence = async () => {
+	const test = await setPersistence(firebaseAuth, browserLocalPersistence)
+	return test
+}
+console.log(persistence)
 const authProvider = new GoogleAuthProvider();
 
 export { firebaseApp, firebaseAuth, authProvider };
