@@ -1,5 +1,3 @@
-// import * as firebase from 'firebase';
-
 import { initializeApp } from "firebase/app";
 import {
 	getAuth,
@@ -7,7 +5,6 @@ import {
 	setPersistence,
 	browserLocalPersistence
 } from "firebase/auth";
-// import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDcr1gG5eRHbiyuB-Fb8bTuhd4I97hLlbA",
