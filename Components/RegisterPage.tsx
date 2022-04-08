@@ -15,6 +15,7 @@ import {
 import * as Google from "expo-auth-session/providers/google";
 import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
 import { save } from "../authentication";
+import { userID, userRefreshToken } from "../consts";
 
 export default function RegisterPage() {
 	const [mail, onChangeMail] = React.useState("");
@@ -37,7 +38,8 @@ export default function RegisterPage() {
 
 			const credential = GoogleAuthProvider.credential(IDtoken);
 			signInWithCredential(auth, credential).then((userCredential) => {
-				save("userUID", userCredential.user.uid);
+				save(userID, userCredential.user.uid);
+				save(userRefreshToken, userCredential.user.refreshToken)
 			});
 		}
 	}, [response]);
@@ -70,9 +72,12 @@ export default function RegisterPage() {
 			createUserWithEmailAndPassword(firebaseAuth, mail, password).then(
 				(response) => {
 					console.log(response);
-					response;
+					save(userRefreshToken, response.user.refreshToken)
+					save(userID, response.user.uid)
 				}
-			);
+			).catch((error)=>{
+				alert(error.message)
+			})
 		}
 	}
 

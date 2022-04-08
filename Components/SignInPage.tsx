@@ -7,12 +7,30 @@ import MailIcon from "../assets/image_components/registerPage/RegisterPageMailIc
 import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
 import { firebaseAuth } from "../firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
 import { save } from "../authentication";
+import { userID, userRefreshToken } from "../consts";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../App";
+import { useEffect } from "react";
+import * as Google from "expo-auth-session/providers/google";
+import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
 
 export default function SignInPage() {
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
+
+	const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+		// androidClientId:
+		// 	"57749978870-aakpp4mgb52pb3fhv7v7v1l51on9j6ar.apps.googleusercontent.com",
+		// iosClientId:
+		// 	"57749978870-bqjp52uk892ah7rka3496nv6267l5vd2.apps.googleusercontent.com",
+		expoClientId:
+			"57749978870-p1galeu9ke5jkenm3l05i3gvsqukefe8.apps.googleusercontent.com",
+		selectAccount: true
+	});
+	const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
 	function InputField(
 		icon: JSX.Element,
@@ -34,6 +52,18 @@ export default function SignInPage() {
 			</View>
 		);
 	}
+
+	React.useEffect(() => {
+		if (response?.type === "success") {
+			const IDtoken = response.params.id_token;
+			const auth = firebaseAuth;
+
+			const credential = GoogleAuthProvider.credential(IDtoken);
+			signInWithCredential(auth, credential).then((userCredential) => {
+				save("userUID", userCredential.user.uid);
+			});
+		}
+	}, [response]);
 
 	return (
 		<View style={styles.container}>
@@ -67,13 +97,17 @@ export default function SignInPage() {
 									password
 								)
 									.then((credential) => {
-										save("userID", credential.user.uid);
+										save(userID, credential.user.uid);
 										save(
-											"userRefreshToken",
+											userRefreshToken,
 											credential.user.refreshToken
 										);
 										alert("Sign in Successful");
-										// navigate("MainScreen")
+										console.log(credential);
+
+										navigation.navigate("MainScreenPage", {
+											screen: "Emergency"
+										});
 									})
 									.catch((error) => {
 										alert(error.message);
@@ -88,6 +122,25 @@ export default function SignInPage() {
 						</View>
 					</Pressable>
 				</View>
+				<Pressable
+						onPress={() => {
+							promptAsync();
+						}}
+						style={registerPageStyles.googleRegisterButton}
+					>
+						<View style={styles.buttonContainer}>
+							<GoogleLogo />
+							<Text
+								style={{
+									color: "black",
+									fontSize: 20,
+									fontFamily: "roboto_400"
+								}}
+							>
+								Sign in with Google
+							</Text>
+						</View>
+					</Pressable>
 			</LinearGradient>
 		</View>
 	);
