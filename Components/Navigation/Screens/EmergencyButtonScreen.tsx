@@ -2,7 +2,6 @@ import React from "react";
 import { View, StyleSheet, Dimensions, Pressable, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import EmergencyButtonUnpressed from "../../../assets/svgs/emergencyPage/EmergencyButtonUnpressed";
-import WhiteBackground from "../../../assets/svgs/emergencyPage/WhiteBackground";
 
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
@@ -13,11 +12,9 @@ export default function EmergencyButtonPage() {
   return (
     <View style={styles.container}>
       <LinearGradient colors={mainGradient} style={styles.background}>
-        <WhiteBackground style={styles.whiteBackground}>
-          <Pressable style={styles.emergencyButton}>
-            <EmergencyButtonUnpressed />
-          </Pressable>
-        </WhiteBackground>
+        <Pressable style={styles.emergencyButton}>
+          <EmergencyButtonUnpressed />
+        </Pressable>
       </LinearGradient>
     </View>
   );
@@ -50,9 +47,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     elevation: 2,
-  },
-  whiteBackground: {
-    top: 50,
-    right: 100,
   },
 });
