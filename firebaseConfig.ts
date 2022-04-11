@@ -1,8 +1,10 @@
-// import * as firebase from 'firebase';
-
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
-// import { getAuth } from "firebase/auth";
+import {
+	getAuth,
+	GoogleAuthProvider,
+	setPersistence,
+	browserLocalPersistence
+} from "firebase/auth";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDcr1gG5eRHbiyuB-Fb8bTuhd4I97hLlbA",
@@ -13,8 +15,13 @@ const firebaseConfig = {
 	appId: "1:57749978870:web:5cdf3509ed43aa931ff6d7"
 };
 const firebaseApp = initializeApp(firebaseConfig);
-const firebaseAuth = getAuth(firebaseApp)
-firebaseAuth.useDeviceLanguage()
-const authProvider = new GoogleAuthProvider()
+const firebaseAuth = getAuth(firebaseApp);
+
+const persistence = async () => {
+	const test = await setPersistence(firebaseAuth, browserLocalPersistence)
+	return test
+}
+console.log(persistence)
+const authProvider = new GoogleAuthProvider();
 
 export { firebaseApp, firebaseAuth, authProvider };
