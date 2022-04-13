@@ -24,57 +24,56 @@ export default function EmergencyButtonPage() {
     }).then((res) => {
       console.log("Request complete! response:", res);
     });
-    useEffect(() => {
-      (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          alert("Permission to access location was denied");
-          return;
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        setLatitude(location.coords.latitude);
-        setLongitude(location.coords.longitude);
-      })();
-    }, []);
-
-    return (
-      <View style={styles.container}>
-        <LinearGradient colors={mainGradient} style={styles.background}>
-          <Pressable style={styles.emergencyButton} onPress={sendinglocation}>
-            <EmergencyButtonUnpressed />
-          </Pressable>
-        </LinearGradient>
-      </View>
-    );
   };
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    })();
+  }, []);
 
-  const styles = StyleSheet.create({
-    container: {
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    background: {
-      height: windowHeight,
-      width: windowWidth,
-    },
-    text: {
-      color: "#000000",
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    emergencyButton: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-    },
-    emergencyButtonView: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      elevation: 2,
-    },
-  });
+  return (
+    <View style={styles.container}>
+      <LinearGradient colors={mainGradient} style={styles.background}>
+        <Pressable style={styles.emergencyButton} onPress={sendinglocation}>
+          <EmergencyButtonUnpressed />
+        </Pressable>
+      </LinearGradient>
+    </View>
+  );
 }
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  background: {
+    height: windowHeight,
+    width: windowWidth,
+  },
+  text: {
+    color: "#000000",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emergencyButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  emergencyButtonView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    elevation: 2,
+  },
+});
