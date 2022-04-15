@@ -78,11 +78,12 @@ export default function MapViewComponent() {
       //need to check if the location is within the geoJson polygon
       if (geoContains(polyObject, [longitude, latitude])) {
         console.log("inside");
-        
+        schedulePushNotification();        
       } else {
         console.log("outside");
       }
     })();
+    //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then(token => setToken(token) );
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => setNotification(notification));
