@@ -1,14 +1,31 @@
-import { View } from "react-native";
-import React, { useEffect} from "react";
+import { Platform, View } from "react-native";
+import React, { useEffect, useRef, useState} from "react";
 import { mainGradient, styles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
 import MapView, {Polygon } from "react-native-maps";
 import * as Location from "expo-location";
 import { geoContains } from "d3-geo";
-import Notification from 'react-native-system-notification';
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+
+
 export default function MapViewComponent() {
-  const [latitude, setLatitude] = React.useState(0);
-  const [longitude, setLongitude] = React.useState(0);
+
+  const [token, setToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const region = {
     latitude: latitude,
     longitude: longitude,
@@ -47,7 +64,9 @@ export default function MapViewComponent() {
     ],
   };
   useEffect(() => {
+
     (async () => {
+      
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         alert("Permission to access location was denied");
@@ -59,11 +78,23 @@ export default function MapViewComponent() {
       //need to check if the location is within the geoJson polygon
       if (geoContains(polyObject, [longitude, latitude])) {
         console.log("inside");
-        Notification.create({subject: "Dangerous Area", body: "You are in a dangerous area"});
+        
       } else {
         console.log("outside");
       }
     })();
+    registerForPushNotificationsAsync().then(token => setToken(token) );
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => setNotification(notification));
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   },[]);
 
   return (
@@ -77,4 +108,45 @@ export default function MapViewComponent() {
       </LinearGradient>
     </View>
   );
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Dangerous Area",
+        body: 'You have entered a dangerous area!',
+        data: { data: 'goes here' },
+      },
+      trigger: null
+    });
+  }
+  
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }
 }
