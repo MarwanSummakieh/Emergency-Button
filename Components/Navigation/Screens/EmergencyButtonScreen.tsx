@@ -1,14 +1,5 @@
 
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Pressable,
-  Text,
-  Alert,
-  Modal,
-} from "react-native";
+
 import React, { useEffect } from "react";
 import { View, StyleSheet, Dimensions, Pressable, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
