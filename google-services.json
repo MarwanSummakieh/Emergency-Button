@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "57749978870",
+    "project_id": "salvatiopush-344309",
+    "storage_bucket": "salvatiopush-344309.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57749978870:android:f290f3ba5356e2ae1ff6d7",
+        "android_client_info": {
+          "package_name": "android.package.salvationNotifications"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57749978870-sd6cncj3o2fn1o1lr3dh5t4r58heos9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbZZc_ng-u2eoG4vr8jhdSydAloDWBcIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57749978870-p1galeu9ke5jkenm3l05i3gvsqukefe8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "57749978870-bqjp52uk892ah7rka3496nv6267l5vd2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
