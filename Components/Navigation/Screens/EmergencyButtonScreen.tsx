@@ -3,10 +3,12 @@ import { View, StyleSheet, Dimensions, Pressable, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import EmergencyButtonUnpressed from "../../../assets/svgs/emergencyPage/EmergencyButtonUnpressed";
 import * as Location from "expo-location";
+import * as SecureStore from 'expo-secure-store';
 
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 import * as Notifications from "expo-notifications";
+import { userID } from "../../../consts";
 
 export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
 async function messagesentNotification() {
@@ -20,6 +22,7 @@ async function messagesentNotification() {
   });
 }
 export default function EmergencyButtonPage() {
+  const uid = SecureStore.getItemAsync(userID);
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
   const sendinglocation = () => {
@@ -27,7 +30,7 @@ export default function EmergencyButtonPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        UID: "123",
+        UID: uid,
         latitude: latitude,
         longitude: longitude,
       }),
