@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Pressable,
   View,
@@ -8,21 +8,56 @@ import {
   Modal,
   Alert,
   Animated,
+  Platform,
 } from "react-native";
-
+import * as Location from "expo-location";
+import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from "expo-linear-gradient";
 import EmergencyButtonUnpressed from "../assets/svgs/emergencyPage/EmergencyButtonUnpressed";
 import EmergencyButtonPressed from "../assets/svgs/emergencyPage/EmergencyButtonPressed";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-
+import * as Notifications from "expo-notifications";
+import { userID } from "../consts";
+import Constants from "expo-constants";
 
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 
 export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
 
+async function messagesentNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "your message has been sent",
+      body: "we'll notify you when someone responds",
+      data: { data: 'goes here' },
+    },
+    trigger: null
+  });
+}
+
 export default function EmergencyButton() {
   const [modalVisible, setModalVisible] = useState(false);
+  const uid = SecureStore.getItemAsync(userID);
+  console.log(uid);
+  const [latitude, setLatitude] = React.useState(0);
+  const [longitude, setLongitude] = React.useState(0);
+  const sendinglocation = () => {
+    fetch("/post/data/here", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        UID: uid,
+        latitude: latitude,
+        longitude: longitude,
+      }),
+    }).then((res) => {
+      if(res.status === 200){
+        messagesentNotification();
+      }
+    });
+  };
+
 
   const showModalTimer = () => {
     setModalVisible(true);
@@ -31,6 +66,19 @@ export default function EmergencyButton() {
     }, 4000);
   };
 
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    })();
+  }, []);
   // const renderTime = ({remainingTime}) => {
   //   if (remainingTime === 0) {
   //     return <div className="timer">Too lale...</div>;
@@ -114,6 +162,37 @@ export default function EmergencyButton() {
     //   </LinearGradient>
     // </View> */
   );
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+  }
 }
 
 const styles = StyleSheet.create({
