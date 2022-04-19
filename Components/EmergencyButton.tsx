@@ -76,221 +76,195 @@ export default function EmergencyButton() {
         console.log("sending location");
         conenctToSendLocation();
       }
-    }, 4000);
-
-    const showModalTimer = () => {
-      setModalVisible(true);
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 4000);
-    };
-
-    useEffect(() => {
-      (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          alert("Permission to access location was denied");
-          return;
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        setLatitude(location.coords.latitude);
-        setLongitude(location.coords.longitude);
-      })();
-    }, []);
-    // const renderTime = ({remainingTime}) => {
-    //   if (remainingTime === 0) {
-    //     return <div className="timer">Too lale...</div>;
-    //   }
-
-    //   return (
-    //     <div className="timer">
-    //       <div className="text">Remaining</div>
-    //       <div className="value">{remainingTime}</div>
-    //       <div className="text">seconds</div>
-    //     </div>
-    //   );
-    // };
-
-    // const renderTime = ({remainingTime}) => {
-    //   CountdownCircleTimer: remainingTime === 0 ? <Text>Complete</Text>
-    // }
-
-    return (
-      <View style={styles.container}>
-        <LinearGradient colors={mainGradient} style={styles.background}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert("Emergency message was cancelled");
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <CountdownCircleTimer
-                  isPlaying
-                  duration={3}
-                  colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-                  colorsTime={[3, 2, 1, 0]}
-                  onComplete={() => ({ shouldRepeat: false })}
-                >
-                  {({ remainingTime }) => (
-                    <Animated.Text style={{ fontSize: 50 }}>
-                      {remainingTime}
-                    </Animated.Text>
-                  )}
-                </CountdownCircleTimer>
-                <Text style={styles.modalText}>
-                  Emergency message is sending...
-                </Text>
-
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => {
-                    setModalVisible(!modalVisible), setCancel(true);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Cancel</Text>
-                </Pressable>
-                <Text>If you're not sure click CANCEL</Text>
-              </View>
-            </View>
-          </Modal>
-
-          <Pressable
-            style={[styles.emergencyButton]}
-            onPress={() => {
-              showModalTimer(), sendLocation();
-            }}
-          >
-            <Text style={styles.emergencyMessage}>
-              In case of emergency click the button
-            </Text>
-
-            <EmergencyButtonUnpressed />
-          </Pressable>
-        </LinearGradient>
-      </View>
-
-      /* // <View style={styles.container}>
-    //   <LinearGradient colors={mainGradient} style={styles.background}>
-    //     <Pressable style={styles.emergencyButton}>
-    //       <EmergencyButtonUnpressed />
-    //     </Pressable>
-    //   </LinearGradient>
-    // </View> */
-    );
-
-    async function registerForPushNotificationsAsync() {
-      let token;
-      if (Constants.isDevice) {
-        const { status: existingStatus } =
-          await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-        if (existingStatus !== "granted") {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
-        }
-        if (finalStatus !== "granted") {
-          alert("Failed to get push token for push notification!");
-          return;
-        }
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-        console.log(token);
-      } else {
-        alert("Must use physical device for Push Notifications");
-      }
-
-      if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
-          name: "default",
-          importance: Notifications.AndroidImportance.MAX,
-          vibrationPattern: [0, 250, 250, 250],
-          lightColor: "#FF231F7C",
-        });
-      }
-
-      return token;
-    }
+    }, 5000);
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    background: {
-      height: windowHeight,
-      width: windowWidth,
-    },
-    text: {
-      color: "#000000",
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    emergencyButton: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-    },
-    emergencyMessage: {
-      padding: 10,
-      flexDirection: "column",
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    emergencyButtonView: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      flexDirection: "column",
-      elevation: 2,
-    },
-    centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22,
-    },
-    modalView: {
-      margin: 20,
-      backgroundColor: "white",
-      borderRadius: 20,
-      padding: 35,
-      alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-    },
-    button: {
-      borderRadius: 20,
-      padding: 10,
-      elevation: 2,
-    },
-    buttonOpen: {
-      backgroundColor: "#F194FF",
-    },
-    buttonClose: {
-      backgroundColor: "#2196F3",
-    },
-    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center",
-    },
-    modalText: {
-      marginBottom: 15,
-      textAlign: "center",
-    },
-  });
+  const showModalTimer = () => {
+    setModalVisible(true);
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 4000);
+  };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    })();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <LinearGradient colors={mainGradient} style={styles.background}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Emergency message was cancelled");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <CountdownCircleTimer
+                isPlaying
+                duration={3}
+                colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                colorsTime={[3, 2, 1, 0]}
+                onComplete={() => ({ shouldRepeat: false })}
+              >
+                {({ remainingTime }) => (
+                  <Animated.Text style={{ fontSize: 50 }}>
+                    {remainingTime}
+                  </Animated.Text>
+                )}
+              </CountdownCircleTimer>
+              <Text style={styles.modalText}>
+                Emergency message is sending...
+              </Text>
+
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setModalVisible(!modalVisible), setCancel(true);
+                }}
+              >
+                <Text style={styles.textStyle}>Cancel</Text>
+              </Pressable>
+              <Text>If you're not sure click CANCEL</Text>
+            </View>
+          </View>
+        </Modal>
+
+        <Pressable
+          style={[styles.emergencyButton]}
+          onPress={() => {
+            showModalTimer(), sendLocation();
+          }}
+        >
+          <Text style={styles.emergencyMessage}>
+            In case of emergency click the button
+          </Text>
+
+          <EmergencyButtonUnpressed />
+        </Pressable>
+      </LinearGradient>
+    </View>
+  );
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
 }
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  background: {
+    height: windowHeight,
+    width: windowWidth,
+  },
+  text: {
+    color: "#000000",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emergencyButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  emergencyMessage: {
+    padding: 10,
+    flexDirection: "column",
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  emergencyButtonView: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    elevation: 2,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+});
