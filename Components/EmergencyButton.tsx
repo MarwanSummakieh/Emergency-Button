@@ -38,7 +38,7 @@ async function messagesentNotification() {
 
 export default function EmergencyButton() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [cancel, setCancel] = useState(false);
+  let cancel = false;
   const uid = SecureStore.getItemAsync(userID);
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
@@ -61,24 +61,31 @@ export default function EmergencyButton() {
       }),
     })
       .then((res) => {
+        cancel = false;
         if (res.status === 201) {
           console.log(res);
           messagesentNotification();
         }
       })
       .catch((err) => {
+        cancel = false;
         console.log(err);
       });
   };
   const sendLocation = () => {
+    
     setTimeout(() => {
-      if (cancel === false) {
+      console.log(cancel);
+      if (cancel === false) {   
         console.log("sending location");
-        conenctToSendLocation();
+        conenctToSendLocation();  
+        cancel = false;     
       }
     }, 5000);
   };
-
+  // const cancelLocation = () => {
+  //   cancel = true;
+  // }
   const showModalTimer = () => {
     setModalVisible(true);
     setTimeout(() => {
@@ -133,7 +140,10 @@ export default function EmergencyButton() {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
-                  setModalVisible(!modalVisible), setCancel(true);
+                  cancel=true;
+                  //cancelLocation();
+                  console.log(cancel);
+                  setModalVisible(!modalVisible);
                 }}
               >
                 <Text style={styles.textStyle}>Cancel</Text>
@@ -146,7 +156,8 @@ export default function EmergencyButton() {
         <Pressable
           style={[styles.emergencyButton]}
           onPress={() => {
-            showModalTimer(), sendLocation();
+            showModalTimer()
+             sendLocation();
           }}
         >
           <Text style={styles.emergencyMessage}>
