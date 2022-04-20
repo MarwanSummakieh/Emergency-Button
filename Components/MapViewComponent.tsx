@@ -9,11 +9,11 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: false,
+		shouldSetBadge: false
+	})
 });
 
 export default function MapViewComponent() {
@@ -96,85 +96,89 @@ export default function MapViewComponent() {
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) =>
-        setNotification(notification)
-      );
+		notificationListener.current =
+			Notifications.addNotificationReceivedListener((notification) =>
+				setNotification(notification)
+			);
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+		responseListener.current =
+			Notifications.addNotificationResponseReceivedListener(
+				(response) => {
+					console.log(response);
+				}
+			);
 
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+		return () => {
+			Notifications.removeNotificationSubscription(
+				notificationListener.current
+			);
+			Notifications.removeNotificationSubscription(
+				responseListener.current
+			);
+		};
+	}, []);
 
-  return (
-    <View style={styles.container}>
-      <LinearGradient colors={mainGradient} style={styles.background}>
-        <View style={styles.container}>
-          <MapView style={styles.map} showsUserLocation={true} region={region}>
-            <Circle
-              center={{
-                latitude: latitude-10,
-                longitude: longitude,
-              }}
-              radius={dangerousArea.properties.radius}
-              strokeColor="rgba(158, 158, 158, 0.5)"
-            />
-          </MapView>
-          <Pressable onPress={checkIfInDangerousArea}>
-            <Text>Press me to check if you are in a dangerous area</Text>
-          </Pressable>
-        </View>
-      </LinearGradient>
-    </View>
-  );
-  async function schedulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Dangerous Area",
-        body: "You have entered a dangerous area!",
-        data: { data: "goes here" },
-      },
-      trigger: null,
-    });
-  }
+	return (
+		<View style={styles.container}>
+			<LinearGradient colors={mainGradient} style={styles.background}>
+				<View style={styles.container}>
+					<MapView
+						style={styles.map}
+						showsUserLocation={true}
+						region={region}
+					>
+					
+					</MapView>
+					<Pressable onPress={checkIfInDangerousArea}>
+						<Text>
+							Press me to check if you are in a dangerous area
+						</Text>
+					</Pressable>
+				</View>
+			</LinearGradient>
+		</View>
+	);
+	async function schedulePushNotification() {
+		await Notifications.scheduleNotificationAsync({
+			content: {
+				title: "Dangerous Area",
+				body: "You have entered a dangerous area!",
+				data: { data: "goes here" }
+			},
+			trigger: null
+		});
+	}
 
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
+	async function registerForPushNotificationsAsync() {
+		let token;
+		if (Constants.isDevice) {
+			const { status: existingStatus } =
+				await Notifications.getPermissionsAsync();
+			let finalStatus = existingStatus;
+			if (existingStatus !== "granted") {
+				const { status } =
+					await Notifications.requestPermissionsAsync();
+				finalStatus = status;
+			}
+			if (finalStatus !== "granted") {
+				alert("Failed to get push token for push notification!");
+				return;
+			}
+			token = (await Notifications.getExpoPushTokenAsync()).data;
+			console.log(token);
+		} else {
+			alert("Must use physical device for Push Notifications");
+		}
 
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
+		if (Platform.OS === "android") {
+			Notifications.setNotificationChannelAsync("default", {
+				name: "default",
+				importance: Notifications.AndroidImportance.MAX,
+				vibrationPattern: [0, 250, 250, 250],
+				lightColor: "#FF231F7C"
+			});
+		}
 
-    return token;
-  }
+		return token;
+	}
 }
