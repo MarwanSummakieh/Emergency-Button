@@ -13,6 +13,8 @@ import MainContainer from "./Components/Navigation/MainContainer";
 import SignInPage from "./Components/SignInPage";
 import { getValueFor } from "./authentication";
 import { userID } from "./consts";
+// This import is only for testing the login/register flow
+import * as SecureStore from "expo-secure-store";
 
 // These are for type checking the navigation.
 // See https://reactnavigation.org/docs/typescript/
@@ -28,18 +30,14 @@ export type MainNavigationParams = {
 	Map: undefined;
 };
 
-// Navigation could be refactored using this approach 
+// Navigation could be refactored using this approach
 // https://reactnavigation.org/docs/connecting-navigation-prop/
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
-
-	let userIsAuthenticated = () => {
-		if (getValueFor(userID) !== false) {
-			return true;
-		} else return false;
-	};
+	// Uncomment this if you want to delete the stored user token (want to login/register)
+	// SecureStore.deleteItemAsync(userID).then(()=>{(getValueFor(userID))})
 
 	let [fontsLoaded] = useFonts({
 		roboto_400: Roboto_400Regular
@@ -56,40 +54,47 @@ export default function App() {
 
 					<SafeAreaView style={styles.mainContainer}>
 						<Stack.Navigator>
-							<Stack.Screen
-								name="FrontPage"
-								component={FrontPage}
-								options={{
-									headerTransparent: true,
-									headerTitle: ""
-								}}
-							/>
-							<Stack.Screen
-								name="RegisterPage"
-								component={RegisterPage}
-								options={{
-									headerTransparent: true,
-									headerTitle: "Register",
-									headerTintColor: "#FFF"
-								}}
-							/>
-							<Stack.Screen
-								name="SignInPage"
-								component={SignInPage}
-								options={{
-									headerTransparent: true,
-									headerTitle: "Sign In",
-									headerTintColor: "#FFF"
-								}}
-							/>
-							<Stack.Screen
-								name="MainScreenPage"
-								component={MainContainer}
-								options={{
-									headerTransparent: true,
-									headerTitle: ""
-								}}
-							/>
+							{getValueFor(userID) != undefined ? (
+								// No token found, user isn't signed in
+								<>
+									<Stack.Screen
+										name="FrontPage"
+										component={FrontPage}
+										options={{
+											headerTransparent: true,
+											headerTitle: ""
+										}}
+									/>
+									<Stack.Screen
+										name="RegisterPage"
+										component={RegisterPage}
+										options={{
+											headerTransparent: true,
+											headerTitle: "Register",
+											headerTintColor: "#FFF"
+										}}
+									/>
+									<Stack.Screen
+										name="SignInPage"
+										component={SignInPage}
+										options={{
+											headerTransparent: true,
+											headerTitle: "Sign In",
+											headerTintColor: "#FFF"
+										}}
+									/>
+								</>
+							) : (
+								// User is signed in
+								<Stack.Screen
+									name="MainScreenPage"
+									component={MainContainer}
+									options={{
+										headerTransparent: true,
+										headerTitle: ""
+									}}
+								/>
+							)}
 						</Stack.Navigator>
 					</SafeAreaView>
 				</NavigationContainer>

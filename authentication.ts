@@ -9,15 +9,16 @@ function getValueFor(key: string): any {
 	SecureStore.getItemAsync(key).then(
 		(result) => {
 			if (result) {
-				alert("🔐 Here's your value 🔐 \n" + result);
+				console.log("🔐 Here's your value 🔐 \n" + result);
+				// console.log(result)
 				return result;
 			} else {
-				alert("No values stored under that key.");
-				return false
+				console.log("No values stored under that key.");
+				return undefined
 			}
 		}
 	).catch((error)=> {
-		return false
+		return undefined
 	})
 }
 // request, response, promptAsync,

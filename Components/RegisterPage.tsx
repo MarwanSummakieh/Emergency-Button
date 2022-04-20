@@ -16,6 +16,9 @@ import * as Google from "expo-auth-session/providers/google";
 import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
 import { save } from "../authentication";
 import { userID, userRefreshToken } from "../consts";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../App";
 
 export default function RegisterPage() {
 	const [mail, onChangeMail] = React.useState("");
@@ -31,6 +34,8 @@ export default function RegisterPage() {
 		selectAccount: true
 	});
 
+	const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
 	React.useEffect(() => {
 		if (response?.type === "success") {
 			const IDtoken = response.params.id_token;
@@ -39,7 +44,10 @@ export default function RegisterPage() {
 			const credential = GoogleAuthProvider.credential(IDtoken);
 			signInWithCredential(auth, credential).then((userCredential) => {
 				save(userID, userCredential.user.uid);
-				save(userRefreshToken, userCredential.user.refreshToken)
+				save(userRefreshToken, userCredential.user.refreshToken);
+			});
+			navigation.navigate("MainScreenPage", {
+				screen: "Emergency"
 			});
 		}
 	}, [response]);
@@ -69,15 +77,15 @@ export default function RegisterPage() {
 
 	function signUpWithEmail() {
 		if (password != "" && mail != "") {
-			createUserWithEmailAndPassword(firebaseAuth, mail, password).then(
-				(response) => {
+			createUserWithEmailAndPassword(firebaseAuth, mail, password)
+				.then((response) => {
 					console.log(response);
-					save(userRefreshToken, response.user.refreshToken)
-					save(userID, response.user.uid)
-				}
-			).catch((error)=>{
-				alert(error.message)
-			})
+					save(userRefreshToken, response.user.refreshToken);
+					save(userID, response.user.uid);
+				})
+				.catch((error) => {
+					alert(error.message);
+				});
 		}
 	}
 
@@ -91,7 +99,7 @@ export default function RegisterPage() {
 				<View style={styles.inputsContainer}>
 					<Pressable
 						onPress={() => {
-							promptAsync();
+							promptAsync().then(() => {});
 						}}
 						style={registerPageStyles.googleRegisterButton}
 					>

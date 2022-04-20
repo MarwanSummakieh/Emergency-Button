@@ -7,7 +7,11 @@ import MailIcon from "../assets/image_components/registerPage/RegisterPageMailIc
 import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
 import { firebaseAuth } from "../firebaseConfig";
-import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import {
+	GoogleAuthProvider,
+	signInWithCredential,
+	signInWithEmailAndPassword
+} from "firebase/auth";
 import { save } from "../authentication";
 import { userID, userRefreshToken } from "../consts";
 import { useNavigation } from "@react-navigation/native";
@@ -60,7 +64,11 @@ export default function SignInPage() {
 
 			const credential = GoogleAuthProvider.credential(IDtoken);
 			signInWithCredential(auth, credential).then((userCredential) => {
-				save("userUID", userCredential.user.uid);
+				save(userID, userCredential.user.uid);
+				save(userRefreshToken, userCredential.user.refreshToken);
+			});
+			navigation.navigate("MainScreenPage", {
+				screen: "Emergency"
 			});
 		}
 	}, [response]);
@@ -123,24 +131,24 @@ export default function SignInPage() {
 					</Pressable>
 				</View>
 				<Pressable
-						onPress={() => {
-							promptAsync();
-						}}
-						style={registerPageStyles.googleRegisterButton}
-					>
-						<View style={styles.buttonContainer}>
-							<GoogleLogo />
-							<Text
-								style={{
-									color: "black",
-									fontSize: 20,
-									fontFamily: "roboto_400"
-								}}
-							>
-								Sign in with Google
-							</Text>
-						</View>
-					</Pressable>
+					onPress={() => {
+						promptAsync()
+					}}
+					style={registerPageStyles.googleRegisterButton}
+				>
+					<View style={styles.buttonContainer}>
+						<GoogleLogo />
+						<Text
+							style={{
+								color: "black",
+								fontSize: 20,
+								fontFamily: "roboto_400"
+							}}
+						>
+							Sign in with Google
+						</Text>
+					</View>
+				</Pressable>
 			</LinearGradient>
 		</View>
 	);
