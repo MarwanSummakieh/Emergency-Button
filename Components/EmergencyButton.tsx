@@ -45,7 +45,7 @@ export default function EmergencyButton() {
 		last_updated: Date.now(),
 		country: "denamrk"
 	};
-	
+
 	const connectToSendLocation = () => {
 		fetch("http://localhost:7071/create_alert/", {
 			method: "POST",
@@ -79,9 +79,9 @@ export default function EmergencyButton() {
 				connectToSendLocation();
 				cancel = false;
 			}
-		}, 5000);
+		}, 1000);
 	};
-	
+
 	const showModalTimer = () => {
 		setModalVisible(true);
 		setTimeout(() => {
@@ -90,7 +90,7 @@ export default function EmergencyButton() {
 	};
 
 	useEffect(() => {
-		(async () => {
+		async () => {
 			let { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== "granted") {
 				alert("Permission to access location was denied");
@@ -99,7 +99,7 @@ export default function EmergencyButton() {
 			let location = await Location.getCurrentPositionAsync({});
 			setLatitude(location.coords.latitude);
 			setLongitude(location.coords.longitude);
-		})();
+		};
 	}, []);
 
 	return (
@@ -110,8 +110,8 @@ export default function EmergencyButton() {
 					transparent={true}
 					visible={modalVisible}
 					onRequestClose={() => {
-						Alert.alert("Emergency message was cancelled");
 						setModalVisible(!modalVisible);
+						alert("Emergency message was cancelled");
 					}}
 				>
 					<View style={styles.centeredView}>
@@ -126,7 +126,11 @@ export default function EmergencyButton() {
 									"#A30000"
 								]}
 								colorsTime={[3, 2, 1, 0]}
-								onComplete={() => ({ shouldRepeat: false })}
+								
+								onComplete={() => {
+									sendLocation();
+									return { shouldRepeat: false };
+								}}
 							>
 								{({ remainingTime }) => (
 									<Animated.Text style={{ fontSize: 50 }}>
@@ -142,7 +146,6 @@ export default function EmergencyButton() {
 								style={[styles.button, styles.buttonClose]}
 								onPress={() => {
 									cancel = true;
-									//cancelLocation();
 									console.log(cancel);
 									setModalVisible(!modalVisible);
 								}}
@@ -158,7 +161,6 @@ export default function EmergencyButton() {
 					style={[styles.emergencyButton]}
 					onPress={() => {
 						showModalTimer();
-						sendLocation();
 					}}
 				>
 					<Text style={styles.emergencyMessage}>
