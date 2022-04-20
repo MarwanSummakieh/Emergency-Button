@@ -2,9 +2,9 @@ import { Platform, Pressable, View, Text } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { mainGradient, styles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
-import MapView, { Polygon } from "react-native-maps";
+import MapView, { Circle } from "react-native-maps";
 import * as Location from "expo-location";
-import d3, { geoContains } from "d3-geo";
+import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
@@ -30,13 +30,18 @@ export default function MapViewComponent() {
     longitudeDelta: 0.0421,
   };
   //the geoLocation object obtained from geoJson
-  const dangerousArea = [
-    { latitude: 12.538511753082275, longitude: 55.8107594520295 },
-    { latitude: 12.538619041442871, longitude: 55.8138340359014 },
-    { latitude: 12.533115148544312, longitude: 55.81333970742995 },
-    { latitude: 12.534842491149902, longitude: 55.810946345433216 },
-    { latitude: 12.538511753082275, longitude: 55.8107594520295 },
-  ];
+  const dangerousArea = {
+    geometries: [],
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [9.837677478790283, 55.863749949055865],
+    },
+    properties: {
+      subType: "Circle",
+      radius: 100000,
+    },
+  };
   const polyObject = {
     geometries: [],
     type: "FeatureCollection",
@@ -60,9 +65,21 @@ export default function MapViewComponent() {
     ],
   };
   const checkIfInDangerousArea = () => {
-    if (d3.geoContains(polyObject, [longitude+20, latitude+10])) {
-      schedulePushNotification();
-    }
+     if( geolib.isPointWithinRadius(
+        { 
+          latitude: latitude,
+          longitude: longitude
+        },
+        {
+          latitude:55.863884, 
+          longitude:9.840262
+        },
+        10
+      )){
+        schedulePushNotification();
+      }
+    ;
+    
   };
   useEffect(() => {
     (async () => {
@@ -71,6 +88,7 @@ export default function MapViewComponent() {
         alert("Permission to access location was denied");
         return;
       }
+
       let location = await Location.getCurrentPositionAsync({});
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
@@ -101,15 +119,18 @@ export default function MapViewComponent() {
       <LinearGradient colors={mainGradient} style={styles.background}>
         <View style={styles.container}>
           <MapView style={styles.map} showsUserLocation={true} region={region}>
-            <Polygon coordinates={dangerousArea} />
+            <Circle
+              center={{
+                latitude: latitude-10,
+                longitude: longitude,
+              }}
+              radius={dangerousArea.properties.radius}
+              strokeColor="rgba(158, 158, 158, 0.5)"
+            />
           </MapView>
-          <Pressable
-            onPress={checkIfInDangerousArea} 
-          >
-            <Text>Press me to check if you are in a dangerous area</Text> 
+          <Pressable onPress={checkIfInDangerousArea}>
+            <Text>Press me to check if you are in a dangerous area</Text>
           </Pressable>
-        
-          
         </View>
       </LinearGradient>
     </View>

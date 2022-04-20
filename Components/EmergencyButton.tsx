@@ -114,7 +114,7 @@ export default function EmergencyButton() {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
-            Alert.alert("Emergency message was cancelled");
+            alert("Emergency message was cancelled");
             setModalVisible(!modalVisible);
           }}
         >
