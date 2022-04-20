@@ -2,8 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapViewComponent from "../../MapViewComponent";
 
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
+import { windowHeight, windowWidth } from "../../../css/styles";
 
 export default function EmergencyButtonPage() {
 	return (

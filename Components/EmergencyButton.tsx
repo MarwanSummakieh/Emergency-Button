@@ -20,10 +20,7 @@ import * as Notifications from "expo-notifications";
 import { userID } from "../consts";
 import Constants from "expo-constants";
 
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
-
-export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
+import { windowHeight, windowWidth, mainGradient } from "../css/styles";
 
 async function messagesentNotification() {
   await Notifications.scheduleNotificationAsync({
