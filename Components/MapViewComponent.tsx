@@ -2,9 +2,9 @@ import { Platform, Pressable, View, Text } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { mainGradient, styles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
-import MapView, { Polygon } from "react-native-maps";
+import MapView, { Circle } from "react-native-maps";
 import * as Location from "expo-location";
-import d3, { geoContains } from "d3-geo";
+import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
@@ -17,66 +17,84 @@ Notifications.setNotificationHandler({
 });
 
 export default function MapViewComponent() {
-	const [token, setToken] = useState("");
-	const [notification, setNotification] = useState(false);
-	const notificationListener = useRef();
-	const responseListener = useRef();
-	const [latitude, setLatitude] = useState(0);
-	const [longitude, setLongitude] = useState(0);
-	const region = {
-		latitude: latitude,
-		longitude: longitude,
-		latitudeDelta: 0.0922,
-		longitudeDelta: 0.0421
-	};
-	//the geoLocation object obtained from geoJson
-	const dangerousArea = [
-		{ latitude: 12.538511753082275, longitude: 55.8107594520295 },
-		{ latitude: 12.538619041442871, longitude: 55.8138340359014 },
-		{ latitude: 12.533115148544312, longitude: 55.81333970742995 },
-		{ latitude: 12.534842491149902, longitude: 55.810946345433216 },
-		{ latitude: 12.538511753082275, longitude: 55.8107594520295 }
-	];
-	const polyObject = {
-		geometries: [],
-		type: "FeatureCollection",
-		features: [
-			{
-				type: "Feature",
-				properties: {},
-				geometry: {
-					type: "Polygon",
-					coordinates: [
-						[
-							[9.852354526519775, 55.8617359982937],
-							[9.853706359863281, 55.86159751652741],
-							[9.853438138961792, 55.86208521099058],
-							[9.85249400138855, 55.86209725275172],
-							[9.852354526519775, 55.8617359982937]
-						]
-					]
-				}
-			}
-		]
-	};
-	const checkIfInDangerousArea = () => {
-		if (d3.geoContains(polyObject, [longitude + 20, latitude + 10])) {
-			schedulePushNotification();
-		}
-	};
-	useEffect(() => {
-		(async () => {
-			let { status } = await Location.requestForegroundPermissionsAsync();
-			if (status !== "granted") {
-				alert("Permission to access location was denied");
-				return;
-			}
-			let location = await Location.getCurrentPositionAsync({});
-			setLatitude(location.coords.latitude);
-			setLongitude(location.coords.longitude);
-		})();
-		//this doesn't make any sense to me :)
-		registerForPushNotificationsAsync().then((token) => setToken(token));
+  const [token, setToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const region = {
+    latitude: latitude,
+    longitude: longitude,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  };
+  //the geoLocation object obtained from geoJson
+  const dangerousArea = {
+    geometries: [],
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [9.837677478790283, 55.863749949055865],
+    },
+    properties: {
+      subType: "Circle",
+      radius: 100000,
+    },
+  };
+  const polyObject = {
+    geometries: [],
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [9.852354526519775, 55.8617359982937],
+              [9.853706359863281, 55.86159751652741],
+              [9.853438138961792, 55.86208521099058],
+              [9.85249400138855, 55.86209725275172],
+              [9.852354526519775, 55.8617359982937],
+            ],
+          ],
+        },
+      },
+    ],
+  };
+  const checkIfInDangerousArea = () => {
+     if( geolib.isPointWithinRadius(
+        { 
+          latitude: latitude,
+          longitude: longitude
+        },
+        {
+          latitude:55.863884, 
+          longitude:9.840262
+        },
+        10
+      )){
+        schedulePushNotification();
+      }
+    ;
+    
+  };
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    })();
+    //this doesn't make any sense to me :)
+    registerForPushNotificationsAsync().then((token) => setToken(token));
 
 		notificationListener.current =
 			Notifications.addNotificationReceivedListener((notification) =>
@@ -109,7 +127,7 @@ export default function MapViewComponent() {
 						showsUserLocation={true}
 						region={region}
 					>
-						<Polygon coordinates={dangerousArea} />
+					
 					</MapView>
 					<Pressable onPress={checkIfInDangerousArea}>
 						<Text>
