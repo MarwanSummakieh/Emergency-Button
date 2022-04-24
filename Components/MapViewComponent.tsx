@@ -67,8 +67,8 @@ export default function MapViewComponent() {
     ) {
       schedulePushNotification();
       setDangerStatus("in danger");
-	  //don't know if this would work yet
-	  styles.dangerStatus.backgroundColor = "red";
+      //don't know if this would work yet
+      styles.dangerStatus.backgroundColor = "red";
     }
   };
 
@@ -121,8 +121,8 @@ export default function MapViewComponent() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={mainGradient} style={styles.background}>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.dangerStatus}>
           <Text style={styles.dangerStatus}>{dangerStatus}</Text>
           <MapView
             style={styles.map}
@@ -135,11 +135,10 @@ export default function MapViewComponent() {
             }}
             style={styles.nearsetResponder}
           >
-            <Text>The nearest Responder is:</Text>
-            <Text>{responder}</Text>
+            <Text>The nearest Responder is: {responder}</Text>
           </Pressable>
         </View>
-      </LinearGradient>
+      </View>
     </View>
   );
   async function schedulePushNotification() {
