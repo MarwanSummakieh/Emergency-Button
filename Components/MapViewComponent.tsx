@@ -9,16 +9,18 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldPlaySound: false,
-		shouldSetBadge: false
-	})
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
 });
 
 export default function MapViewComponent() {
   const [token, setToken] = useState("");
   const [notification, setNotification] = useState(false);
+  const [responder, setResponder] = useState(0);
+  const [dangerStatus, setDangerStatus] = useState("Safe");
   const notificationListener = useRef();
   const responseListener = useRef();
   const [latitude, setLatitude] = useState(0);
@@ -26,8 +28,14 @@ export default function MapViewComponent() {
   const region = {
     latitude: latitude,
     longitude: longitude,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.001,
+    longitudeDelta: 0.001,
+  };
+  //for getting the coordination of the nearest user so we can use it instead of the dummy data
+  const getTheNearestResponder = () => {
+    fetch("put the endpoint for the nearest responder", {
+      method: "GET",
+    });
   };
   //the geoLocation object obtained from geoJson
   const dangerousArea = {
@@ -42,44 +50,40 @@ export default function MapViewComponent() {
       radius: 100000,
     },
   };
-  const polyObject = {
-    geometries: [],
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Feature",
-        properties: {},
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [9.852354526519775, 55.8617359982937],
-              [9.853706359863281, 55.86159751652741],
-              [9.853438138961792, 55.86208521099058],
-              [9.85249400138855, 55.86209725275172],
-              [9.852354526519775, 55.8617359982937],
-            ],
-          ],
-        },
-      },
-    ],
-  };
+
   const checkIfInDangerousArea = () => {
-     if( geolib.isPointWithinRadius(
-        { 
+    if (
+      geolib.isPointWithinRadius(
+        {
           latitude: latitude,
-          longitude: longitude
+          longitude: longitude,
         },
         {
-          latitude:55.863884, 
-          longitude:9.840262
+          latitude: 55.863884,
+          longitude: 9.840262,
         },
         10
-      )){
-        schedulePushNotification();
+      )
+    ) {
+      schedulePushNotification();
+      setDangerStatus("in danger");
+	  //don't know if this would work yet
+	  styles.dangerStatus.backgroundColor = "red";
+    }
+  };
+
+  const nearestResponder = () => {
+    const distance = geolib.getDistance(
+      {
+        latitude: latitude,
+        longitude: longitude,
+      },
+      {
+        latitude: 55.863884,
+        longitude: 9.840262,
       }
-    ;
-    
+    );
+    setResponder(distance);
   };
   useEffect(() => {
     (async () => {
@@ -92,93 +96,92 @@ export default function MapViewComponent() {
       let location = await Location.getCurrentPositionAsync({});
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
+      checkIfInDangerousArea();
     })();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
 
-		notificationListener.current =
-			Notifications.addNotificationReceivedListener((notification) =>
-				setNotification(notification)
-			);
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) =>
+        setNotification(notification)
+      );
 
-		responseListener.current =
-			Notifications.addNotificationResponseReceivedListener(
-				(response) => {
-					console.log(response);
-				}
-			);
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
-		return () => {
-			Notifications.removeNotificationSubscription(
-				notificationListener.current
-			);
-			Notifications.removeNotificationSubscription(
-				responseListener.current
-			);
-		};
-	}, []);
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
-	return (
-		<View style={styles.container}>
-			<LinearGradient colors={mainGradient} style={styles.background}>
-				<View style={styles.container}>
-					<MapView
-						style={styles.map}
-						showsUserLocation={true}
-						region={region}
-					>
-					
-					</MapView>
-					<Pressable onPress={checkIfInDangerousArea}>
-						<Text>
-							Press me to check if you are in a dangerous area
-						</Text>
-					</Pressable>
-				</View>
-			</LinearGradient>
-		</View>
-	);
-	async function schedulePushNotification() {
-		await Notifications.scheduleNotificationAsync({
-			content: {
-				title: "Dangerous Area",
-				body: "You have entered a dangerous area!",
-				data: { data: "goes here" }
-			},
-			trigger: null
-		});
-	}
+  return (
+    <View style={styles.container}>
+      <LinearGradient colors={mainGradient} style={styles.background}>
+        <View style={styles.container}>
+          <Text style={styles.dangerStatus}>{dangerStatus}</Text>
+          <MapView
+            style={styles.map}
+            showsUserLocation={true}
+            region={region}
+          ></MapView>
+          <Pressable
+            onPress={() => {
+              nearestResponder();
+            }}
+            style={styles.nearsetResponder}
+          >
+            <Text>The nearest Responder is:</Text>
+            <Text>{responder}</Text>
+          </Pressable>
+        </View>
+      </LinearGradient>
+    </View>
+  );
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Dangerous Area",
+        body: "You have entered a dangerous area!",
+        data: { data: "goes here" },
+      },
+      trigger: null,
+    });
+  }
 
-	async function registerForPushNotificationsAsync() {
-		let token;
-		if (Constants.isDevice) {
-			const { status: existingStatus } =
-				await Notifications.getPermissionsAsync();
-			let finalStatus = existingStatus;
-			if (existingStatus !== "granted") {
-				const { status } =
-					await Notifications.requestPermissionsAsync();
-				finalStatus = status;
-			}
-			if (finalStatus !== "granted") {
-				alert("Failed to get push token for push notification!");
-				return;
-			}
-			token = (await Notifications.getExpoPushTokenAsync()).data;
-			console.log(token);
-		} else {
-			alert("Must use physical device for Push Notifications");
-		}
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
 
-		if (Platform.OS === "android") {
-			Notifications.setNotificationChannelAsync("default", {
-				name: "default",
-				importance: Notifications.AndroidImportance.MAX,
-				vibrationPattern: [0, 250, 250, 250],
-				lightColor: "#FF231F7C"
-			});
-		}
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
 
-		return token;
-	}
+    return token;
+  }
 }

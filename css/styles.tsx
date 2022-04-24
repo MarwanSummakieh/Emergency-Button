@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { white } from "react-native-paper/lib/typescript/styles/colors";
 
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
@@ -68,9 +69,31 @@ export const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	map: {
-		width: 300,
-		height: 300,
+		width: windowWidth,
+		height: 0.7*windowHeight,
+		borderWidth: 20,
+		borderColor: "red",
 		borderRadius: 20
+	},
+	nearsetResponder: {
+		width: 300,
+		height: 60,
+		margin: 10,
+		borderRadius: 20,
+		backgroundColor: "white",
+		alignItems: "center",
+		padding: 10,
+		marginBottom: 0,
+	},
+	dangerStatus: {
+		width: windowWidth,
+		height: 50,
+		margin: 10,
+		backgroundColor: "skyblue",
+		alignItems: "center",
+		padding: 10,
+		marginBottom: 0,
+		textAlign: "center"
 	}
 });
 
