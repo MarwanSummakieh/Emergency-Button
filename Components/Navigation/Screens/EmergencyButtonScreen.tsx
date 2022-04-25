@@ -6,16 +6,19 @@ import EmergencyButtonUnpressed from "../../../assets/svgs/emergencyPage/Emergen
 import EmergencyButton from "../../EmergencyButton";
 
 import { windowHeight, windowWidth, mainGradient } from "../../../css/styles";
+import { userID } from "../../../consts";
+import { deleteValue } from "../../../authentication";
 
 export default function EmergencyButtonPage() {
 	return (
 		<View style={styles.container}>
+			{/* <LinearGradient colors={mainGradient}/> */}
 			<EmergencyButton />
-			<LinearGradient colors={mainGradient} style={styles.background}>
+			{/* <LinearGradient colors={mainGradient} style={styles.background}>
 				<Pressable style={styles.emergencyButton}>
 					<EmergencyButtonUnpressed />
 				</Pressable>
-			</LinearGradient>
+			</LinearGradient> */}
 		</View>
 	);
 }
