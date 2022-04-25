@@ -1,5 +1,5 @@
 import { Text, View, TextInput, Pressable } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { mainGradient, registerPageStyles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
 import UserIcon from "../assets/image_components/registerPage/RegisterPageUserIcon";
@@ -18,11 +18,15 @@ import { save } from "../authentication";
 import { userID, userRefreshToken } from "../consts";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../App";
+import { AuthContext, RootStackParamList } from "../App";
+import OrLine from "./OrLine";
 
 export default function RegisterPage() {
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
+
+	const { signUpWithEmail, signInWithGoogle } = useContext(AuthContext);
+
 
 	const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
 		// androidClientId:
@@ -45,9 +49,7 @@ export default function RegisterPage() {
 			signInWithCredential(auth, credential).then((userCredential) => {
 				save(userID, userCredential.user.uid);
 				save(userRefreshToken, userCredential.user.refreshToken);
-			});
-			navigation.navigate("MainScreenPage", {
-				screen: "Emergency"
+				signInWithGoogle(userCredential.user.uid)
 			});
 		}
 	}, [response]);
@@ -75,20 +77,6 @@ export default function RegisterPage() {
 		);
 	}
 
-	function signUpWithEmail() {
-		if (password != "" && mail != "") {
-			createUserWithEmailAndPassword(firebaseAuth, mail, password)
-				.then((response) => {
-					console.log(response);
-					save(userRefreshToken, response.user.refreshToken);
-					save(userID, response.user.uid);
-				})
-				.catch((error) => {
-					alert(error.message);
-				});
-		}
-	}
-
 	return (
 		<View style={styles.container}>
 			<LinearGradient
@@ -99,7 +87,7 @@ export default function RegisterPage() {
 				<View style={styles.inputsContainer}>
 					<Pressable
 						onPress={() => {
-							promptAsync().then(() => {});
+							promptAsync();
 						}}
 						style={registerPageStyles.googleRegisterButton}
 					>
@@ -116,35 +104,8 @@ export default function RegisterPage() {
 							</Text>
 						</View>
 					</Pressable>
-					<View
-						style={{ flexDirection: "row", alignItems: "center" }}
-					>
-						<View
-							style={{
-								flex: 1,
-								height: 1,
-								backgroundColor: "lightgrey"
-							}}
-						/>
-						<View>
-							<Text
-								style={{
-									width: 50,
-									textAlign: "center",
-									color: "lightgrey"
-								}}
-							>
-								OR
-							</Text>
-						</View>
-						<View
-							style={{
-								flex: 1,
-								height: 1,
-								backgroundColor: "lightgrey"
-							}}
-						/>
-					</View>
+
+					<OrLine/>
 
 					{/* One of these fields could probably be removed */}
 					{InputField(
@@ -179,7 +140,9 @@ export default function RegisterPage() {
 					)} */}
 					<Pressable
 						onPress={() => {
-							signUpWithEmail();
+							if (password != "" && mail != "") {
+								signUpWithEmail({"mail":mail,"password":password})
+							}
 							alert("REGISTERED");
 							// navigation.navigate("MainScreen")	//Or whatever we decide to call it
 						}}
