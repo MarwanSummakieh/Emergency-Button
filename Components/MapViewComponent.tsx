@@ -7,6 +7,8 @@ import * as Location from "expo-location";
 import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import PermissionsButton from "../BackGroundProcesses/LocationSending";
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -61,8 +63,8 @@ export default function MapViewComponent() {
         {
           //latitude: 55.863884,
           //longitude: 9.840262,
-		  latitude:latitude,
-		  longitude:longitude,
+          latitude: latitude,
+          longitude: longitude,
         },
         10
       )
@@ -70,11 +72,10 @@ export default function MapViewComponent() {
       schedulePushNotification();
       setDangerStatus("in danger");
       //don't know if this would work yet
-     //styles.dangerStatus.backgroundColor = "red";
-      
+      //styles.dangerStatus.backgroundColor = "red";
     }
   };
-1
+  1;
   const nearestResponder = () => {
     const distance = geolib.getDistance(
       {
@@ -87,24 +88,25 @@ export default function MapViewComponent() {
       }
     );
     setResponder(distance);
-	setTimeout(() => {
-		styles.dangerStatus.backgroundColor = "red";
-	}, 1000);
+    setTimeout(() => {
+      styles.dangerStatus.backgroundColor = "red";
+    }, 1000);
   };
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        alert("Permission to access location was denied");
-        return;
-      }
+    // (async () => {
+    // let { status } = await Location.requestForegroundPermissionsAsync();
+    //if (status !== "granted") {
+    // alert("Permission to access location was denied");
+    // return;
+    //}
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLatitude(location.coords.latitude);
-      setLongitude(location.coords.longitude);
-      
-    }
-    )();
+    //let location = await Location.getCurrentPositionAsync({});
+    // setLatitude(location.coords.latitude);
+    //setLongitude(location.coords.longitude);
+
+    //}
+    //)();
+    PermissionsButton();
     checkIfInDangerousArea();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));

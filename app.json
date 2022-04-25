@@ -18,7 +18,13 @@
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF"
       },
-      "googleServicesFile": "google-services.json"
+      "googleServicesFile": "google-services.json",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
     },
     "plugins": [
       [
