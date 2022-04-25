@@ -17,12 +17,9 @@ export const windowHeight = Dimensions.get("window").height;
 
 export const mainGradient = ["rgba(52, 170, 252, 1)", "rgba(118, 10, 202, 1)"];
 
-
-
 export default function EmergencyButtonPage() {
   return (
     <View style={styles.container}>
-      
       <EmergencyButton />
     </View>
   );
@@ -97,4 +94,5 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  
 });

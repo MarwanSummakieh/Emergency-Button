@@ -7,12 +7,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // Importing Pages
 import EmergencyButtonPage from "./Screens/EmergencyButtonScreen";
 import MapScreen from "./Screens/MapScreen";
+import { LinearGradient } from "react-native-svg";
+import { StatusBar } from "expo-status-bar";
 
 const Tab = createBottomTabNavigator();
 
 export default function MainContainer() {
   return (
     <NavigationContainer independent={true}>
+      <StatusBar style="auto" />
       <Tab.Navigator
         initialRouteName="Emergency"
         screenOptions={{
@@ -23,6 +26,7 @@ export default function MainContainer() {
           name="Emergency"
           component={EmergencyButtonPage}
           options={{
+            headerTitle: "",
             tabBarLabel: "Emergency",
             tabBarStyle: { position: "absolute" },
             tabBarIcon: ({ color, size }) => (
