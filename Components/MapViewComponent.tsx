@@ -59,8 +59,10 @@ export default function MapViewComponent() {
           longitude: longitude,
         },
         {
-          latitude: 55.863884,
-          longitude: 9.840262,
+          //latitude: 55.863884,
+          //longitude: 9.840262,
+		  latitude:latitude,
+		  longitude:longitude,
         },
         10
       )
@@ -68,10 +70,11 @@ export default function MapViewComponent() {
       schedulePushNotification();
       setDangerStatus("in danger");
       //don't know if this would work yet
-      styles.dangerStatus.backgroundColor = "red";
+     //styles.dangerStatus.backgroundColor = "red";
+      
     }
   };
-
+1
   const nearestResponder = () => {
     const distance = geolib.getDistance(
       {
@@ -84,6 +87,9 @@ export default function MapViewComponent() {
       }
     );
     setResponder(distance);
+	setTimeout(() => {
+		styles.dangerStatus.backgroundColor = "red";
+	}, 1000);
   };
   useEffect(() => {
     (async () => {
@@ -96,8 +102,10 @@ export default function MapViewComponent() {
       let location = await Location.getCurrentPositionAsync({});
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
-      checkIfInDangerousArea();
-    })();
+      
+    }
+    )();
+    checkIfInDangerousArea();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
 

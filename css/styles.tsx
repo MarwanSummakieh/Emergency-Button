@@ -72,7 +72,6 @@ export const styles = StyleSheet.create({
 		width: windowWidth,
 		height: 0.7*windowHeight,
 		borderWidth: 20,
-		borderColor: "red",
 		borderRadius: 20
 	},
 	nearsetResponder: {
