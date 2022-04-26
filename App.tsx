@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, SafeAreaView, LogBox } from "react-native";
+import { StyleSheet, SafeAreaView, LogBox, Platform } from "react-native";
 import {
 	NavigationContainer,
 	NavigatorScreenParams
@@ -249,6 +249,8 @@ const styles = StyleSheet.create({
 	// Sets the color at the bottom of "SafeAreaView"
 	mainContainer: {
 		flex: 1,
-		backgroundColor: "#760ACA"
+		backgroundColor: "#760ACA",
+		// paddingTop: Platform.OS === 'android' ? 25 : 0
+		paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
 	}
 });
