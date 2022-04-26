@@ -7,7 +7,7 @@ import * as Location from "expo-location";
 import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-import PermissionsButton from "../BackGroundProcesses/LocationSending";
+//import PermissionsButton from "../BackGroundProcesses/LocationSending";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -100,7 +100,7 @@ export default function MapViewComponent() {
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
     })();
-    PermissionsButton();
+    //PermissionsButton();
     checkIfInDangerousArea();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
