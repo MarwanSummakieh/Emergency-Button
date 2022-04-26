@@ -6,8 +6,9 @@ import { windowHeight, windowWidth } from "../../../css/styles";
 
 export default function EmergencyButtonPage() {
 	return (
-		<View style={styles.container}>
-			{/* <LinearGradient colors={mainGradient} style={styles.background} /> */}
+		<View style={styles.background}>
+			{/* <LinearGradien
+			t colors={mainGradient} style={styles.background} /> */}
 
 				{/* <Text
 			onPress={() => alert("Emergency Screen")}

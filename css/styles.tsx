@@ -23,12 +23,12 @@ export const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center"
+		justifyContent: "center",
 	},
 	background: {
 		flex: 1,
 		height: windowHeight,
-		width: windowWidth
+		width: windowWidth,
 	},
 	inputsContainer: {
 		flex: 1,
@@ -69,10 +69,8 @@ export const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	map: {
-		width: windowWidth,
-		height: 0.7*windowHeight,
-		borderWidth: 20,
-		borderRadius: 20
+		width: windowWidth*0.97,
+		height: 0.6*windowHeight
 	},
 	nearsetResponder: {
 		width: 300,
@@ -87,11 +85,15 @@ export const styles = StyleSheet.create({
 	},
 	dangerStatus: {
 		margin: 10,
-		backgroundColor: "skyblue",
+		backgroundColor: "red",
 		alignItems: "center",
-		padding: 10,
+		paddingBottom: 0.03*windowHeight,
 		marginBottom: 0,
-		textAlign: "center"
+		textAlign: "center",
+		borderRadius: 30
+	},
+	dangerText:{
+		margin:0.03*windowWidth
 	}
 });
 

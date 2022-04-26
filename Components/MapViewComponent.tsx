@@ -9,7 +9,6 @@ import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import PermissionsButton from "../BackGroundProcesses/LocationSending";
 
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -83,29 +82,24 @@ export default function MapViewComponent() {
         longitude: longitude,
       },
       {
-        latitude: 55.863884,
         longitude: 9.840262,
+        latitude: 55.863884,
       }
     );
     setResponder(distance);
-    setTimeout(() => {
-      styles.dangerStatus.backgroundColor = "red";
-    }, 1000);
   };
   useEffect(() => {
-    // (async () => {
-    // let { status } = await Location.requestForegroundPermissionsAsync();
-    //if (status !== "granted") {
-    // alert("Permission to access location was denied");
-    // return;
-    //}
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
 
-    //let location = await Location.getCurrentPositionAsync({});
-    // setLatitude(location.coords.latitude);
-    //setLongitude(location.coords.longitude);
-
-    //}
-    //)();
+      let location = await Location.getCurrentPositionAsync({});
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+    })();
     PermissionsButton();
     checkIfInDangerousArea();
     //this doesn't make any sense to me :)
@@ -131,24 +125,29 @@ export default function MapViewComponent() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.container}>
-        <View style={styles.dangerStatus}>
-          <Text style={styles.dangerStatus}>{dangerStatus}</Text>
-          <MapView
-            style={styles.map}
-            showsUserLocation={true}
-            region={region}
-          ></MapView>
-          <Pressable
-            onPress={() => {
-              nearestResponder();
-            }}
-            style={styles.nearsetResponder}
-          >
-            <Text>The nearest Responder is: {responder}</Text>
-          </Pressable>
-        </View>
+      <View style={styles.dangerStatus}>
+        <Text style={styles.dangerText}>{dangerStatus}</Text>
+        <MapView
+          style={styles.map}
+          showsUserLocation={true}
+          region={region}
+        >
+          <Circle
+            center={{ latitude: latitude, longitude: longitude }}
+            radius={100}
+            fillColor = "rgba(200,0,0,0.25)"
+            
+          />
+        </MapView>
       </View>
+      <Pressable
+          onPress={() => {
+            nearestResponder();
+          }}
+          style={styles.nearsetResponder}
+        >
+          <Text>The nearest Responder is: {responder}</Text>
+        </Pressable>
     </View>
   );
   async function schedulePushNotification() {

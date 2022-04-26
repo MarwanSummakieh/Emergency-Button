@@ -9,6 +9,7 @@ import EmergencyButtonPage from "./Screens/EmergencyButtonScreen";
 import MapScreen from "./Screens/MapScreen";
 import { Pressable, View, Text } from "react-native";
 import { AuthContext } from "../../App";
+import { windowHeight } from "../../css/styles";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,6 +35,8 @@ export default function MainContainer() {
 						),
 						headerTransparent: true,
 						headerTitleAlign: "center",
+						headerStyle: {
+						height:windowHeight*0.1},
 						headerRight: () => (
 							<Pressable
 								onPress={() => signOut()}
@@ -58,7 +61,11 @@ export default function MainContainer() {
 							/>
 						),
 						headerTransparent: true,
-						headerTitleAlign: "center"
+						headerTitleAlign: "center",
+						headerStyle: {
+							height:windowHeight*0.1
+						},
+						
 					}}
 				/>
 			</Tab.Navigator>
