@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 	// Sets the color at the top of "SafeAreaView"
 	topContainer: {
 		flex: 0,
-		backgroundColor: "#34AAFC",
+		backgroundColor: "transparent",
 		paddingTop: Platform.OS === "android" ? 30 : 0
 	},
 	// Sets the color at the bottom of "SafeAreaView"
