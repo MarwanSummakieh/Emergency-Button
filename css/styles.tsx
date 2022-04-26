@@ -1,4 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { white } from "react-native-paper/lib/typescript/styles/colors";
 
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
@@ -22,12 +23,12 @@ export const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center"
+		justifyContent: "center",
 	},
 	background: {
 		flex: 1,
 		height: windowHeight,
-		width: windowWidth
+		width: windowWidth,
 	},
 	inputsContainer: {
 		flex: 1,
@@ -68,9 +69,31 @@ export const styles = StyleSheet.create({
 		flexDirection: "row"
 	},
 	map: {
+		width: windowWidth*0.97,
+		height: 0.6*windowHeight
+	},
+	nearsetResponder: {
 		width: 300,
-		height: 300,
-		borderRadius: 20
+		height: 40,
+		margin: 10,
+		borderRadius: 20,
+		backgroundColor: "white",
+		alignItems: "center",
+		padding: 10,
+		marginBottom: 0,
+		
+	},
+	dangerStatus: {
+		margin: 10,
+		backgroundColor: "red",
+		alignItems: "center",
+		paddingBottom: 0.03*windowHeight,
+		marginBottom: 0,
+		textAlign: "center",
+		borderRadius: 30
+	},
+	dangerText:{
+		margin:0.03*windowWidth
 	}
 });
 

@@ -55,7 +55,7 @@ export default function FrontPage() {
 				</Pressable>
 				<Pressable
 					onPress={() => {
-						navigation.navigate("MainScreenPage", {
+						navigation.navigate("MainContainer", {
 							screen: "Emergency"
 						});
 					}}

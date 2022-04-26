@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
-import React from "react";
+import { Text, View, TextInput, Pressable } from "react-native";
+import React, { useContext } from "react";
 import { mainGradient, registerPageStyles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
 import UserIcon from "../assets/image_components/registerPage/RegisterPageUserIcon";
@@ -7,17 +7,24 @@ import MailIcon from "../assets/image_components/registerPage/RegisterPageMailIc
 import { KeyboardType } from "react-native";
 import { styles } from "../css/styles";
 import { firebaseAuth } from "../firebaseConfig";
-import { GoogleAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import {
+	GoogleAuthProvider,
+	signInWithCredential,
+	signInWithEmailAndPassword
+} from "firebase/auth";
 import { save } from "../authentication";
 import { userID, userRefreshToken } from "../consts";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../App";
-import { useEffect } from "react";
+
 import * as Google from "expo-auth-session/providers/google";
 import GoogleLogo from "../assets/image_components/registerPage/GoogleLogo";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList, AuthContext } from "../App";
+import OrLine from "./OrLine";
 
 export default function SignInPage() {
+	const { signInWithEmail, signInWithGoogle } = useContext(AuthContext);
+
 	const [mail, onChangeMail] = React.useState("");
 	const [password, onChangePassword] = React.useState("");
 
@@ -60,7 +67,9 @@ export default function SignInPage() {
 
 			const credential = GoogleAuthProvider.credential(IDtoken);
 			signInWithCredential(auth, credential).then((userCredential) => {
-				save("userUID", userCredential.user.uid);
+				save(userID, userCredential.user.uid);
+				save(userRefreshToken, userCredential.user.refreshToken);
+				signInWithGoogle(userCredential.user.uid);
 			});
 		}
 	}, [response]);
@@ -73,56 +82,7 @@ export default function SignInPage() {
 				style={styles.background}
 			>
 				<View style={styles.inputsContainer}>
-					{InputField(
-						<MailIcon />,
-						onChangeMail,
-						mail,
-						"Your Email",
-						"email-address"
-					)}
-
-					{InputField(
-						<UserIcon />,
-						onChangePassword,
-						password,
-						"Your Password",
-						"default"
-					)}
 					<Pressable
-						onPress={() => {
-							if (mail !== "" || password !== "") {
-								signInWithEmailAndPassword(
-									firebaseAuth,
-									mail,
-									password
-								)
-									.then((credential) => {
-										save(userID, credential.user.uid);
-										save(
-											userRefreshToken,
-											credential.user.refreshToken
-										);
-										alert("Sign in Successful");
-										console.log(credential);
-
-										navigation.navigate("MainScreenPage", {
-											screen: "Emergency"
-										});
-									})
-									.catch((error) => {
-										alert(error.message);
-										//Whatever else when wrong credentials are used.
-									});
-							}
-						}}
-						style={registerPageStyles.registerButton}
-					>
-						<View style={styles.buttonContainer}>
-							<Text style={styles.buttonText}>Sign in</Text>
-						</View>
-					</Pressable>
-				</View>
-				<Pressable
 						onPress={() => {
 							promptAsync();
 						}}
@@ -141,6 +101,37 @@ export default function SignInPage() {
 							</Text>
 						</View>
 					</Pressable>
+
+					<OrLine />
+
+					{InputField(
+						<MailIcon />,
+						onChangeMail,
+						mail,
+						"Your Email",
+						"email-address"
+					)}
+
+					{InputField(
+						<UserIcon />,
+						onChangePassword,
+						password,
+						"Your Password",
+						"default"
+					)}
+					<Pressable
+						onPress={() => {
+							if (mail !== "" || password !== "") {
+								signInWithEmail({"mail":mail,"password":password})
+							}
+						}}
+						style={registerPageStyles.registerButton}
+					>
+						<View style={styles.buttonContainer}>
+							<Text style={styles.buttonText}>Sign in</Text>
+						</View>
+					</Pressable>
+				</View>
 			</LinearGradient>
 		</View>
 	);

@@ -2,13 +2,13 @@ import React from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapViewComponent from "../../MapViewComponent";
 
-export const windowWidth = Dimensions.get("window").width;
-export const windowHeight = Dimensions.get("window").height;
+import { windowHeight, windowWidth } from "../../../css/styles";
 
 export default function EmergencyButtonPage() {
 	return (
-		<View style={styles.container}>
-			{/* <LinearGradient colors={mainGradient} style={styles.background} /> */}
+		<View style={styles.background}>
+			{/* <LinearGradien
+			t colors={mainGradient} style={styles.background} /> */}
 
 				{/* <Text
 			onPress={() => alert("Emergency Screen")}
