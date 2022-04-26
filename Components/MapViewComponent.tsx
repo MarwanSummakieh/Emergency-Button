@@ -59,19 +59,22 @@ export default function MapViewComponent() {
           longitude: longitude,
         },
         {
-          latitude: 55.863884,
-          longitude: 9.840262,
+          //latitude: 55.863884,
+          //longitude: 9.840262,
+		  latitude:latitude,
+		  longitude:longitude,
         },
         10
       )
     ) {
       schedulePushNotification();
       setDangerStatus("in danger");
-	  //don't know if this would work yet
-	  styles.dangerStatus.backgroundColor = "red";
+      //don't know if this would work yet
+     //styles.dangerStatus.backgroundColor = "red";
+      
     }
   };
-
+1
   const nearestResponder = () => {
     const distance = geolib.getDistance(
       {
@@ -84,6 +87,9 @@ export default function MapViewComponent() {
       }
     );
     setResponder(distance);
+	setTimeout(() => {
+		styles.dangerStatus.backgroundColor = "red";
+	}, 1000);
   };
   useEffect(() => {
     (async () => {
@@ -96,8 +102,10 @@ export default function MapViewComponent() {
       let location = await Location.getCurrentPositionAsync({});
       setLatitude(location.coords.latitude);
       setLongitude(location.coords.longitude);
-      checkIfInDangerousArea();
-    })();
+      
+    }
+    )();
+    checkIfInDangerousArea();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
 
@@ -121,8 +129,8 @@ export default function MapViewComponent() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={mainGradient} style={styles.background}>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <View style={styles.dangerStatus}>
           <Text style={styles.dangerStatus}>{dangerStatus}</Text>
           <MapView
             style={styles.map}
@@ -135,11 +143,10 @@ export default function MapViewComponent() {
             }}
             style={styles.nearsetResponder}
           >
-            <Text>The nearest Responder is:</Text>
-            <Text>{responder}</Text>
+            <Text>The nearest Responder is: {responder}</Text>
           </Pressable>
         </View>
-      </LinearGradient>
+      </View>
     </View>
   );
   async function schedulePushNotification() {

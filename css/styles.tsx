@@ -72,22 +72,20 @@ export const styles = StyleSheet.create({
 		width: windowWidth,
 		height: 0.7*windowHeight,
 		borderWidth: 20,
-		borderColor: "red",
 		borderRadius: 20
 	},
 	nearsetResponder: {
 		width: 300,
-		height: 60,
+		height: 40,
 		margin: 10,
 		borderRadius: 20,
 		backgroundColor: "white",
 		alignItems: "center",
 		padding: 10,
 		marginBottom: 0,
+		
 	},
 	dangerStatus: {
-		width: windowWidth,
-		height: 50,
 		margin: 10,
 		backgroundColor: "skyblue",
 		alignItems: "center",
