@@ -16,8 +16,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
-
 export default function MapViewComponent() {
 
   const [token, setToken] = useState('');
