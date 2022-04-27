@@ -2,28 +2,22 @@ import React, { useEffect, useState } from "react";
 import {
   Pressable,
   View,
-  Dimensions,
   StyleSheet,
   Text,
   Modal,
-  Alert,
   Animated,
   Platform,
-  TouchableOpacity,
 } from "react-native";
 import * as Location from "expo-location";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from "expo-linear-gradient";
-import EmergencyButtonUnpressed from "../assets/svgs/emergencyPage/EmergencyButtonUnpressed";
-import EmergencyButtonPressed from "../assets/svgs/emergencyPage/EmergencyButtonPressed";
-import EmergencyButtonShield from "../assets/svgs/emergencyPage/EmergencyButtonShield";
-import EmergencyButtonHeart from "../assets/svgs/emergencyPage/EmergencyButtonHeart";
 import EmergencyShieldAndHeart from "../assets/svgs/emergencyPage/EmergencyShieldAndHeart";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import * as Notifications from "expo-notifications";
 import { userID } from "../consts";
 import Constants from "expo-constants";
-
+import EmergencyButtonPressed from "../assets/svgs/emergencyPage/EmergencyButtonPressed";
+import EmergencyShieldAndHeartPressed from "../assets/svgs/emergencyPage/EmergencyShieldAndHeartPressed";
 import { windowHeight, windowWidth, mainGradient } from "../css/styles";
 
 async function messageSentNotification() {
@@ -39,15 +33,18 @@ async function messageSentNotification() {
 
 export default function EmergencyButton() {
   const [modalVisible, setModalVisible] = useState(false);
-  let cancel = false;
+    let isCancel = false;
+//   const [isCancel, setIsCancel] = useState(false);
   const uid = SecureStore.getItemAsync(userID);
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
+  const [isDisabled, setIsDisabled] = React.useState(false);
+//   let isDisabled = false
   const location = {
     type: "Point",
     coordinates: [longitude, latitude],
     last_updated: Date.now(),
-    country: "denamrk",
+    country: "Denmark",
   };
 
   const connectToSendLocation = () => {
@@ -63,25 +60,25 @@ export default function EmergencyButton() {
       }),
     })
       .then((res) => {
-        cancel = false;
+        isCancel = false;
         if (res.status === 201) {
           console.log(res);
           messageSentNotification();
         }
       })
       .catch((err) => {
-        cancel = false;
+        isCancel = false;
         console.log(err);
       });
   };
 
   const sendLocation = () => {
     setTimeout(() => {
-      console.log(cancel);
-      if (cancel === false) {
+    //   console.log(cancel);
+      if (isCancel === false) {
         console.log("sending location");
         connectToSendLocation();
-        cancel = false;
+        // isCancel = false;
       }
     }, 1000);
   };
@@ -91,6 +88,15 @@ export default function EmergencyButton() {
     setTimeout(() => {
       setModalVisible(false);
     }, 4000);
+  };
+
+  const disableOnCompleteRequest = () => {
+    if (isCancel === false) {
+    //   setIsDisabled(true);
+	  setIsDisabled(true)
+      console.log("isDisabled" + isDisabled);
+      //   console.log(isCancel);
+    }
   };
 
   useEffect(() => {
@@ -117,6 +123,7 @@ export default function EmergencyButton() {
             setModalVisible(!modalVisible);
             alert("Emergency message was cancelled");
           }}
+		  
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -127,8 +134,15 @@ export default function EmergencyButton() {
                 colorsTime={[3, 2, 1, 0]}
                 onComplete={() => {
                   sendLocation();
-                  return { shouldRepeat: false };
+                  alert("Emergency message is sent!");
+				  disableOnCompleteRequest();
+
+                  return {
+                    // shouldRepeat: false,
+                    // disabled: true,
+                  };
                 }}
+				
               >
                 {({ remainingTime }) => (
                   <Animated.Text style={{ fontSize: 50 }}>
@@ -143,8 +157,9 @@ export default function EmergencyButton() {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
-                  cancel = true;
-                  console.log(cancel);
+                    isCancel = true;
+				//   setIsCancel(true)	
+                  console.log("isCancel" + isCancel);
                   setModalVisible(!modalVisible);
                 }}
               >
@@ -160,14 +175,22 @@ export default function EmergencyButton() {
         </Text>
 
         <View style={styles.emergencyButton}>
-          <TouchableOpacity
+          <Pressable
+            // disabled={isDisabled}
             style={[styles.emergencyButtonClick]}
             onPress={() => {
-              showModalTimer();
+				if (isDisabled){
+					alert("Is disabled")
+				}
+				else {
+
+					showModalTimer();
+				}
             }}
+			
           >
             <EmergencyShieldAndHeart />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </LinearGradient>
     </View>
@@ -236,9 +259,8 @@ const styles = StyleSheet.create({
   emergencyButtonClick: {
     alignItems: "center",
     justifyContent: "center",
-    height:220,
-    width:200,
-    
+    height: 220,
+    width: 200,
   },
   emergencyMessage: {
     padding: 10,
@@ -285,7 +307,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "red",
   },
   textStyle: {
     color: "white",
