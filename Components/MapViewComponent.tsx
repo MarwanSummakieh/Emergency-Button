@@ -126,7 +126,7 @@ export default function MapViewComponent() {
   return (
     <View style={styles.container}>
       <View style={styles.dangerStatus}>
-        <Text style={styles.dangerText}>{dangerStatus}</Text>
+        <Text style={styles.dangerStatus}>{dangerStatus}</Text>
         <MapView
           style={styles.map}
           showsUserLocation={true}
