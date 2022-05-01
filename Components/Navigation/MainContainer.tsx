@@ -65,7 +65,7 @@ export default function MainContainer() {
       console.log(longitude);
       getUserID();
     }).then(() => {
-    setInterval(sendLocationPeriodically, 5000);
+    //setInterval(sendLocationPeriodically, 5000);
     });
   }, [userID]);
 

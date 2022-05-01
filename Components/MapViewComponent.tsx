@@ -2,7 +2,7 @@ import { Platform, Pressable, View, Text } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { mainGradient, styles } from "../css/styles";
 import { LinearGradient } from "expo-linear-gradient";
-import MapView, { Circle } from "react-native-maps";
+import Map from 'google-maps-react';
 import * as Location from "expo-location";
 import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
@@ -24,6 +24,7 @@ export default function MapViewComponent() {
   const [dangerStatus, setDangerStatus] = useState("Safe");
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [danger_zones, setDanger_zones] = useState<any>([]);
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const region = {
@@ -38,43 +39,38 @@ export default function MapViewComponent() {
       method: "GET",
     });
   };
-  //the geoLocation object obtained from geoJson
-  const dangerousArea = {
-    geometries: [],
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [9.837677478790283, 55.863749949055865],
-    },
-    properties: {
-      subType: "Circle",
-      radius: 100000,
-    },
+  //getting the dangerous areas from API
+  const getDangerousAreas = async () => {
+    await fetch("https://bpr-api.azurewebsites.net/danger_zones/", {
+      method: "GET",
+    }).then((res) =>
+      res.json().then((data) => {
+        setDanger_zones(data);
+        console.log(data);
+      })
+    );
   };
-
   const checkIfInDangerousArea = () => {
-    if (
-      geolib.isPointWithinRadius(
-        {
-          latitude: latitude,
-          longitude: longitude,
-        },
-        {
-          //latitude: 55.863884,
-          //longitude: 9.840262,
-          latitude: latitude,
-          longitude: longitude,
-        },
-        10
-      )
-    ) {
-      schedulePushNotification();
-      setDangerStatus("in danger");
-      //don't know if this would work yet
-      //styles.dangerStatus.backgroundColor = "red";
+    for (let i = 0; i < danger_zones.length; i++) {
+      if (
+        (geolib.isPointInside(
+          { latitude, longitude },
+          danger_zones[i].location.coordinates
+        ),
+        danger_zones[i].radius)
+      ) {
+        setDangerStatus("IN DANGER");
+        setNotification(true);
+        console.log("in danger");
+        return;
+      } else {
+        setDangerStatus("Safe");
+        setNotification(false);
+        console.log("safe");
+      }
     }
   };
-  1;
+
   const nearestResponder = () => {
     const distance = geolib.getDistance(
       {
@@ -87,6 +83,18 @@ export default function MapViewComponent() {
       }
     );
     setResponder(distance);
+  };
+  const renderCirclesOfDangerousAreas = () => {
+    return (
+      <Circle
+        center={{
+          latitude: latitude,
+          longitude: longitude,
+        }}
+        radius={500}
+        strokeColor="rgba(255,0,0,0.5)"
+      />
+    );
   };
   useEffect(() => {
     (async () => {
@@ -102,6 +110,7 @@ export default function MapViewComponent() {
     })();
     //PermissionsButton();
     checkIfInDangerousArea();
+    getDangerousAreas();
     //this doesn't make any sense to me :)
     registerForPushNotificationsAsync().then((token) => setToken(token));
 
@@ -127,27 +136,18 @@ export default function MapViewComponent() {
     <View style={styles.container}>
       <View style={styles.dangerStatus}>
         <Text style={styles.dangerStatus}>{dangerStatus}</Text>
-        <MapView
-          style={styles.map}
-          showsUserLocation={true}
-          region={region}
-        >
-          <Circle
-            center={{ latitude: latitude, longitude: longitude }}
-            radius={100}
-            fillColor = "rgba(200,0,0,0.25)"
-            
-          />
-        </MapView>
+        
       </View>
       <Pressable
-          onPress={() => {
-            nearestResponder();
-          }}
-          style={styles.nearsetResponder}
-        >
-          <Text>The nearest Responder is: {responder}</Text>
-        </Pressable>
+        onPress={() => {
+          nearestResponder();
+          getDangerousAreas();
+          console.log(danger_zones);
+        }}
+        style={styles.nearsetResponder}
+      >
+        <Text>The nearest Responder is: {responder}</Text>
+      </Pressable>
     </View>
   );
   async function schedulePushNotification() {
