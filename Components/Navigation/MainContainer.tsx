@@ -46,7 +46,7 @@ export default function MainContainer() {
       body: JSON.stringify({
         location: {
           location_type: "Point",
-          coordinates: [latitude, longitude],
+          coordinates: [longitude, latitude],
           last_updated: Date.now(),
           country: country,
         },
