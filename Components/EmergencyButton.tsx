@@ -19,6 +19,7 @@ import Constants from "expo-constants";
 import EmergencyButtonPressed from "../assets/svgs/emergencyPage/EmergencyButtonPressed";
 import EmergencyShieldAndHeartPressed from "../assets/svgs/emergencyPage/EmergencyShieldAndHeartPressed";
 import { windowHeight, windowWidth, mainGradient } from "../css/styles";
+import ResponderPopup from "../Components/ResponderPopup";
 
 async function messageSentNotification() {
   await Notifications.scheduleNotificationAsync({
@@ -33,13 +34,13 @@ async function messageSentNotification() {
 
 export default function EmergencyButton() {
   const [modalVisible, setModalVisible] = useState(false);
-    let isCancel = false;
-//   const [isCancel, setIsCancel] = useState(false);
+  let isCancel = false;
+  //   const [isCancel, setIsCancel] = useState(false);
   const uid = SecureStore.getItemAsync(userID);
   const [latitude, setLatitude] = React.useState(0);
   const [longitude, setLongitude] = React.useState(0);
   const [isDisabled, setIsDisabled] = React.useState(false);
-//   let isDisabled = false
+  //   let isDisabled = false
   const location = {
     type: "Point",
     coordinates: [longitude, latitude],
@@ -62,19 +63,19 @@ export default function EmergencyButton() {
       .then((res) => {
         isCancel = false;
         if (res.status === 201) {
-          console.log(res);
+          console.log("res" + res);
           messageSentNotification();
         }
       })
       .catch((err) => {
         isCancel = false;
-        console.log(err);
+        console.log("err" + err);
       });
   };
 
   const sendLocation = () => {
     setTimeout(() => {
-    //   console.log(cancel);
+      //   console.log(cancel);
       if (isCancel === false) {
         console.log("sending location");
         connectToSendLocation();
@@ -92,8 +93,8 @@ export default function EmergencyButton() {
 
   const disableOnCompleteRequest = () => {
     if (isCancel === false) {
-    //   setIsDisabled(true);
-	  setIsDisabled(true)
+      //   setIsDisabled(true);
+      setIsDisabled(true);
       console.log("isDisabled" + isDisabled);
       //   console.log(isCancel);
     }
@@ -123,7 +124,6 @@ export default function EmergencyButton() {
             setModalVisible(!modalVisible);
             alert("Emergency message was cancelled");
           }}
-		  
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -135,14 +135,13 @@ export default function EmergencyButton() {
                 onComplete={() => {
                   sendLocation();
                   alert("Emergency message is sent!");
-				  disableOnCompleteRequest();
+                  disableOnCompleteRequest();
 
                   return {
                     // shouldRepeat: false,
                     // disabled: true,
                   };
                 }}
-				
               >
                 {({ remainingTime }) => (
                   <Animated.Text style={{ fontSize: 50 }}>
@@ -157,8 +156,8 @@ export default function EmergencyButton() {
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
-                    isCancel = true;
-				//   setIsCancel(true)	
+                  isCancel = true;
+                  //   setIsCancel(true)
                   console.log("isCancel" + isCancel);
                   setModalVisible(!modalVisible);
                 }}
@@ -179,18 +178,18 @@ export default function EmergencyButton() {
             // disabled={isDisabled}
             style={[styles.emergencyButtonClick]}
             onPress={() => {
-				if (isDisabled){
-					alert("Is disabled")
-				}
-				else {
-
-					showModalTimer();
-				}
+              if (isDisabled) {
+                alert("Is disabled");
+              } else {
+                showModalTimer();
+              }
             }}
-			
           >
             <EmergencyShieldAndHeart />
           </Pressable>
+          {/* <Pressable>
+            <ResponderPopup />
+          </Pressable> */}
         </View>
       </LinearGradient>
     </View>
