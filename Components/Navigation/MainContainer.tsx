@@ -46,9 +46,9 @@ export default function MainContainer() {
 				location: {
 					location_type: "Point",
 					coordinates: [longitude, latitude],
-					last_updated: Date.now(),
-					country: country
 				},
+				last_updated: Date.now(),
+				country: country,
 				userID: userID
 			})
 		}).then((res) => {
