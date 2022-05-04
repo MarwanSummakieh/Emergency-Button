@@ -143,7 +143,10 @@ export default function RegisterPage() {
 							if (password != "" && mail != "") {
 								signUpWithEmail({"mail":mail,"password":password})
 							}
-							alert("REGISTERED");
+							else {
+								alert("Email or password field is empty")
+							}
+							// alert("REGISTERED");
 							// navigation.navigate("MainScreen")	//Or whatever we decide to call it
 						}}
 						style={registerPageStyles.registerButton}
