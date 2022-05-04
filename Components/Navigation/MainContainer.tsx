@@ -46,7 +46,7 @@ export default function MainContainer() {
       body: JSON.stringify({
         location: {
           location_type: "Point",
-          coordinates: [latitude, longitude],
+          coordinates: [longitude, latitude],
           last_updated: Date.now(),
           country: country,
         },
@@ -65,7 +65,7 @@ export default function MainContainer() {
       console.log(longitude);
       getUserID();
     }).then(() => {
-    setInterval(sendLocationPeriodically, 5000);
+    //setInterval(sendLocationPeriodically, 5000);
     });
   }, [userID]);
 

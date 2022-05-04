@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		justifyContent: "center",
+		backgroundColor: "rgba(52, 170, 252, 1)"
 	},
 	background: {
 		flex: 1,
@@ -70,27 +71,23 @@ export const styles = StyleSheet.create({
 	},
 	map: {
 		width: windowWidth*0.97,
-		height: 0.6*windowHeight
+		height: 0.65*windowHeight,
 	},
 	nearsetResponder: {
 		width: 300,
-		height: 40,
-		margin: 10,
+		height: 0.1*windowHeight,
 		borderRadius: 20,
-		backgroundColor: "white",
+		backgroundColor: "#FFFFFF",
 		alignItems: "center",
-		padding: 10,
-		marginBottom: 0,
+		padding: 0.05*windowWidth,
+		marginTop: 0.02*windowHeight,
 		
 	},
 	dangerStatus: {
-		margin: 10,
-		backgroundColor: "red",
 		alignItems: "center",
-		paddingBottom: 0.03*windowHeight,
-		marginBottom: 0,
 		textAlign: "center",
-		borderRadius: 30
+		padding: 0.05*windowWidth,
+		borderRadius: 20,
 	},
 	dangerText:{
 		margin:0.03*windowWidth
