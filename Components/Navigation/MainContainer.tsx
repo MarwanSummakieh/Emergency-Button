@@ -2,9 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-
 import Ionicons from "react-native-vector-icons/Ionicons";
-
 // Importing Pages
 import EmergencyButtonPage from "./Screens/EmergencyButtonScreen";
 import MapScreen from "./Screens/MapScreen";
@@ -16,13 +14,61 @@ import {
 	SafeAreaView,
 	Platform
 } from "react-native";
+import * as Location from "expo-location";
 import { AuthContext } from "../../App";
 import { windowHeight } from "../../css/styles";
+import { useEffect, useState } from "react";
+import { userID } from "../../consts";
+import * as SecureStore from "expo-secure-store";
 
 const Tab = createBottomTabNavigator();
 
 export default function MainContainer() {
 	const { signOut } = React.useContext(AuthContext);
+	const [latitude, setLatitude] = useState(0);
+	const [longitude, setLongitude] = useState(0);
+	const [country] = useState("Denmark");
+	const [userID, setUserID] = useState("");
+
+	const getUserID = async () => {
+		await SecureStore.getItemAsync("userID").then((value) => {
+			setUserID(value);
+		});
+	};
+	const sendLocationPeriodically = () => {
+		console.log("updating location");
+		fetch("https://bpr-api.azurewebsites.net/update_location/", {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				location: {
+					location_type: "Point",
+					coordinates: [longitude, latitude],
+				},
+				last_updated: Date.now(),
+				country: country,
+				userID: userID
+			})
+		}).then((res) => {
+			console.log(res.status);
+		});
+	};
+	useEffect(() => {
+		let location = Location.getCurrentPositionAsync({});
+		location
+			.then((data) => {
+				setLatitude(data.coords.latitude);
+				console.log(latitude);
+				setLongitude(data.coords.longitude);
+				console.log(longitude);
+				getUserID();
+			})
+			.then(() => {
+				//setInterval(sendLocationPeriodically, 5000);
+			});
+	}, [userID]);
 
 	return (
 		<NavigationContainer independent={true}>
@@ -51,7 +97,10 @@ export default function MainContainer() {
 							headerTransparent: true,
 							headerTitleAlign: "center",
 							headerRight: () => (
-								<Pressable onPress={() => signOut()} style={{marginRight:10}}>
+								<Pressable
+									onPress={() => signOut()}
+									style={{ marginRight: 10 }}
+								>
 									<View>
 										<Text>Sign Out</Text>
 									</View>
@@ -80,7 +129,6 @@ export default function MainContainer() {
 		</NavigationContainer>
 	);
 }
-
 const styles = StyleSheet.create({
 	// Sets the color at the top of "SafeAreaView"
 	topContainer: {

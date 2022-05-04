@@ -66,7 +66,7 @@ export default function App() {
 	// deleteValue(userID);
 
 	const [state, dispatch] = useReducer(
-		(prevState:any, action:any) => {
+		(prevState: any, action: any) => {
 			switch (action.type) {
 				case "RESTORE_TOKEN":
 					return {
@@ -137,7 +137,7 @@ export default function App() {
 						});
 					})
 					.catch((error) => {
-						alert(error.message);
+						alert("Wrong login information provided.");
 						//Whatever else when wrong credentials are used.
 					});
 			},
@@ -157,11 +157,11 @@ export default function App() {
 						dispatch({ type: "SIGN_IN", token: response.user.uid });
 					})
 					.catch((error) => {
-						alert(error.message);
+						alert("An account with this email already exists. Try logging in.");
 					});
 			},
 
-			signInWithGoogle: async (uid:any) => {
+			signInWithGoogle: async (uid: any) => {
 				dispatch({
 					type: "SIGN_IN",
 					token: uid
@@ -219,20 +219,18 @@ export default function App() {
 								/>
 							</>
 						) : (
-							(
-								// User is signed in
-								<>
-									<Stack.Screen
-										name="MainContainer"
-										component={MainContainer}
-										options={{
-											headerTransparent: true,
-											headerTitle: ""
-										}}
-									/>
-								</>
-							))
-						}
+							// User is signed in
+							<>
+								<Stack.Screen
+									name="MainContainer"
+									component={MainContainer}
+									options={{
+										headerTransparent: true,
+										headerTitle: ""
+									}}
+								/>
+							</>
+						)}
 					</Stack.Navigator>
 				</SafeAreaView>
 			</NavigationContainer>

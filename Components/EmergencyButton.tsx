@@ -126,7 +126,6 @@ export default function EmergencyButton() {
 									"#A30000"
 								]}
 								colorsTime={[3, 2, 1, 0]}
-								
 								onComplete={() => {
 									sendLocation();
 									return { shouldRepeat: false };
