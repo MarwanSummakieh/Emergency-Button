@@ -7,10 +7,14 @@ import MapView, { Circle } from "react-native-maps";
 import * as geolib from "geolib";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-
+import { userID } from "../consts";
+import * as SecureStore from "expo-secure-store";
 export const windowWidth = Dimensions.get("window").width;
 export const windowHeight = Dimensions.get("window").height;
 //import PermissionsButton from "../BackGroundProcesses/LocationSending";
+
+
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,7 +27,7 @@ Notifications.setNotificationHandler({
 export default function MapViewComponent() {
   const [token, setToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const [responder, setResponder] = useState(0);
+  const [responder, setResponder] = useState("");
   const [dangerStatus, setDangerStatus] = useState("");
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -36,14 +40,29 @@ export default function MapViewComponent() {
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   };
+  const uid = SecureStore.getItemAsync(userID);
 
   //for getting the coordination of the nearest user so we can use it instead of the dummy data
   const getTheNearestResponder = () => {
-    fetch("put the endpoint for the nearest responder", {
-      method: "GET",
+    fetch("http://localhost:7071/nearest_responders/", {
+      method: "POST",
+      body: JSON.stringify({
+        "userID": uid,
+        "location": {
+          "type": "string",
+          "coordinates": [
+            longitude,
+            latitude
+          ]
+        },
+        "last_updated": Date.now(),
+        "country": "string",
+        "expo_token": registerForPushNotificationsAsync(),
+      }),
     }).then((res) => {
       res.json().then((data) => {
-        setResponder(data.distance);
+        setResponder(data);
+        console.log(responder);
       });
     });
   };
@@ -55,7 +74,6 @@ export default function MapViewComponent() {
     }).then((res) =>
       res.json().then((data) => {
         setDanger_zones(data.danger_zones);
-        console.log(danger_zones);
       })
     );
   };
@@ -112,6 +130,7 @@ export default function MapViewComponent() {
 
   useEffect(() => {
     getDangerousAreas();
+    getTheNearestResponder();
   }, []);
 
   useEffect(() => {
@@ -176,6 +195,7 @@ export default function MapViewComponent() {
         <Pressable
         onPress={() => {
           getDangerousAreas();
+          getTheNearestResponder();
         }}
         style={styles.nearsetResponder}
       >
@@ -200,6 +220,7 @@ export default function MapViewComponent() {
         data: { data: "goes here" },
       },
       trigger: null,
+     
     });
   }
 
