@@ -44,10 +44,11 @@ export default function MapViewComponent() {
 	const getTheNearestResponder = async () => {
 		const uid = await getValueFor(userID);
 		const expo_token = await registerForPushNotificationsAsync();
+		console.log("expo_token "+ expo_token)
 		console.log("longitude" + longitude);
 		console.log("latitude" + latitude);
 		console.log(uid);
-		fetch("https://bpr-api.azurewebsites.net/nearest_responders/", {
+		fetch("https://bpr-api.azurewebsites.net/nearest_responder/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -186,6 +187,7 @@ export default function MapViewComponent() {
 				lightColor: "#FF231F7C"
 			});
 		}
+		return token
 	}
 
 	useEffect(() => {
