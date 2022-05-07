@@ -21,6 +21,7 @@ import { userID } from "../consts";
 import Constants from "expo-constants";
 
 import { windowHeight, windowWidth, mainGradient } from "../css/styles";
+import { getValueFor } from "../authentication";
 
 async function messageSentNotification() {
 	await Notifications.scheduleNotificationAsync({
@@ -36,22 +37,26 @@ async function messageSentNotification() {
 export default function EmergencyButton() {
 	const [modalVisible, setModalVisible] = useState(false);
 	let cancel = false;
-	const uid = SecureStore.getItemAsync(userID);
 	const [latitude, setLatitude] = React.useState(0);
 	const [longitude, setLongitude] = React.useState(0);
 	const location = {
 		type: "Point",
-		coordinates: [longitude, latitude],
-		last_updated: Date.now(),
-		country: "denamrk"
+		coordinates: [longitude, latitude]
 	};
 
-	const connectToSendLocation = () => {
+	const connectToSendLocation = async () => {
+		// console.log(getValueFor(userID).then(result=>{return result}))
+		let uid = await getValueFor(userID);
+		let latest_location = await Location.getCurrentPositionAsync({});
+		setLatitude(latest_location.coords.latitude);
+		setLongitude(latest_location.coords.longitude);
 		fetch("http://localhost:7071/create_alert/", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				location: location,
+				last_updated: Date.now(),
+				country: "Denmark",
 				userID: uid,
 				responderID: "",
 				resolved: false,
@@ -60,10 +65,14 @@ export default function EmergencyButton() {
 		})
 			.then((res) => {
 				cancel = false;
-				if (res.status === 201) {
-					console.log(res);
-					messageSentNotification();
-				}
+				// if (res.status === 201) {
+				console.log(
+					res.json().then((data) => {
+						console.log(data);
+					})
+				);
+				messageSentNotification();
+				// }
 			})
 			.catch((err) => {
 				cancel = false;
