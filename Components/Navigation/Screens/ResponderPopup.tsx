@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
-const App = () => {
+const ResponderPopup = () => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={styles.centeredView}>
@@ -90,4 +90,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default ResponderPopup;

@@ -30,6 +30,7 @@ import {
 	signInWithEmailAndPassword
 } from "firebase/auth";
 import { firebaseAuth } from "./firebaseConfig";
+import ResponderPopup from "./Components/Navigation/Screens/ResponderPopup";
 
 // These are for type checking the navigation.
 // See https://reactnavigation.org/docs/typescript/
@@ -43,6 +44,7 @@ export type RootStackParamList = {
 export type MainNavigationParams = {
 	Emergency: undefined;
 	Map: undefined;
+	ResponderPopup: undefined;
 };
 
 // Navigation could be refactored using this approach
