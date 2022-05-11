@@ -160,17 +160,7 @@ export default function MainContainer() {
             tabBarActiveTintColor: "#34AAFC",
           }}
         >
-          <Tab.Screen
-            name="Responder"
-            component={ResponderPopup}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="megaphone" color={color} size={size} />
-              ),
-              headerTransparent: true,
-              headerTitleAlign: "center",
-            }}
-          />
+          <Tab.Screen name="Respond" component={ResponderPopup} />
           <Tab.Screen
             name="Emergency"
             component={EmergencyButtonPage}
