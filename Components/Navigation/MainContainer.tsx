@@ -155,7 +155,7 @@ export default function MainContainer() {
             tabBarActiveTintColor: "#34AAFC",
           }}
         >
-          <Tab.Screen name="ResponderPopup" component={ResponderPopup} />
+          <Tab.Screen name="Respond" component={ResponderPopup} />
           <Tab.Screen
             name="Emergency"
             component={EmergencyButtonPage}
