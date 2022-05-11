@@ -35,7 +35,6 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import ResponderPopup from "./Screens/ResponderPopup";
 import { StackNavigationProp } from "@react-navigation/stack";
-import ResponderTab from "../../assets/svgs/emergencyPage/RespoderTab";
 
 const Tab = createBottomTabNavigator();
 
@@ -160,7 +159,18 @@ export default function MainContainer() {
             tabBarActiveTintColor: "#34AAFC",
           }}
         >
-          <Tab.Screen name="Respond" component={ResponderPopup} />
+          <Tab.Screen
+            name="Respond"
+            component={ResponderPopup}
+            options={{
+              tabBarLabel: "Respond",
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="megaphone" color={color} size={size} />
+              ),
+              headerTransparent: true,
+              headerTitleAlign: "center",
+            }}
+          />
           <Tab.Screen
             name="Emergency"
             component={EmergencyButtonPage}
