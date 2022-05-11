@@ -24,13 +24,18 @@ import {
   Linking,
 } from "react-native";
 import * as Location from "expo-location";
-import { AuthContext, MainNavigationParams, RootStackParamList } from "../../App";
+import {
+  AuthContext,
+  MainNavigationParams,
+  RootStackParamList,
+} from "../../App";
 import { useEffect, useRef, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import ResponderPopup from "./Screens/ResponderPopup";
 import { StackNavigationProp } from "@react-navigation/stack";
+import ResponderTab from "../../assets/svgs/emergencyPage/RespoderTab";
 
 const Tab = createBottomTabNavigator();
 
@@ -79,7 +84,7 @@ export default function MainContainer() {
   const [longitude, setLongitude] = useState(0);
   const [country] = useState("Denmark");
   const [userID, setUserID] = useState("");
- //const navigationRef = createNavigationContainerRef();
+  //const navigationRef = createNavigationContainerRef();
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -155,7 +160,17 @@ export default function MainContainer() {
             tabBarActiveTintColor: "#34AAFC",
           }}
         >
-          <Tab.Screen name="ResponderPopup" component={ResponderPopup} />
+          <Tab.Screen
+            name="Responder"
+            component={ResponderPopup}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="megaphone" color={color} size={size} />
+              ),
+              headerTransparent: true,
+              headerTitleAlign: "center",
+            }}
+          />
           <Tab.Screen
             name="Emergency"
             component={EmergencyButtonPage}
