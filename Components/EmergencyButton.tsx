@@ -46,16 +46,16 @@ export default function EmergencyButton() {
 
   const connectToSendLocation = async () => {
     const sentUID = await SecureStore.getItemAsync(userID);
-	const body = {
-        location: location,
-        last_updated: Date.now(),
-        country: "denamrk",
-        userID: sentUID,
-        responderID: "",
-        resolved: false,
-        status: "received",
-      }
-	  console.log(body);
+    const body = {
+      location: location,
+      last_updated: Date.now(),
+      country: "denamrk",
+      userID: sentUID,
+      responderID: "",
+      resolved: false,
+      status: "received",
+    };
+    console.log(body);
     fetch("https://bpr-api.azurewebsites.net/create_alert/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -63,8 +63,8 @@ export default function EmergencyButton() {
     })
       .then((res) => {
         cancel = false;
+        console.log(res.status);
         if (res.status === 201) {
-          console.log(res);
           messageSentNotification();
         }
       })
