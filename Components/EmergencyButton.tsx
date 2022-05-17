@@ -93,8 +93,7 @@ export default function EmergencyButton() {
   };
 
   const getLocation = async () => {
-    let location = await Location.getCurrentPositionAsync({}).then((res) => {
-    });
+    let location = await Location.getCurrentPositionAsync({});
     setLatitude(location.coords.latitude);
     setLongitude(location.coords.longitude);
   };
@@ -168,7 +167,6 @@ export default function EmergencyButton() {
             });
           }}
         >
-          
           <Text style={styles.emergencyMessage}>
             In case of emergency click the button
           </Text>
