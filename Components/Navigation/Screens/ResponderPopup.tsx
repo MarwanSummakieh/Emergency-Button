@@ -1,48 +1,104 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import { windowWidth, windowHeight } from "../../MapViewComponent";
+import { NotificationContext } from "../MainContainer";
+import * as SecureStore from "expo-secure-store";
+import { userID } from "../../../consts";
+import { async } from "@firebase/util";
 
 const ResponderPopup = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const { notification } = useContext(NotificationContext);
+  const [respond, setRespond] = useState("No request yet");
+  const context = useContext(NotificationContext);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+
+  const getVictimLocation = async () => {
+    const responderID = await SecureStore.getItemAsync(userID);
+    fetch(
+      "https://bpr-api.azurewebsites.net/accept_alert/?_id=" + notification._id,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          location: {
+            type: "string",
+            coordinates: [0, 0],
+          },
+          last_updated: Date.now(),
+          country: "string",
+          userID: "string",
+          responderID: responderID,
+          resolved: true,
+          status: "accetped",
+        }),
+      }
+    ).catch((err) => {
+      console.log(err);
+    });
+  };
+  const pressingTheButton = async () => {
+    if(respond === "Respond"){
+     setRespond("Finished");
+     getVictimLocation();
+    }else{
+      setRespond("No request yet");
+      setLatitude(0);
+      setLongitude(0);
+      context.setNotification({});
+    }
+  }
+  useEffect(() => {
+    if (notification.location !== undefined) {
+      setRespond("Respond");
+      setLatitude(notification.location.coordinates[1]);
+      setLongitude(notification.location.coordinates[0]);
+    }
+  }, [notification]);
+  useEffect(() => {console.log("trrriiiggeer")}, [latitude]);
   return (
     <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
+      <View style={styles.centeredView}>
+        <MapView
+          region={{
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0,
+            longitudeDelta: 0,
+          }}
+          style={styles.map}
+          showsCompass={true}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+        >
+          <Marker
+            coordinate={{
+              latitude: latitude,
+              longitude: longitude,
+            }}
+          />
+        </MapView>
+      </View>
+      <Pressable
+        disabled={respond === "No request yet"}
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => {
+           pressingTheButton();
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Someone needs help!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Respond</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Cancel</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
+        <Text style={styles.textStyle}>{respond}</Text>
       </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  map: {
+    width: windowWidth * 0.97,
+    height: 0.65 * windowHeight,
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -65,6 +121,18 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
+    height: windowHeight * 0.1,
+    width: windowWidth * 0.8,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  finishButton: {
+    height: windowHeight * 0.05,
+    width: windowWidth * 0.8,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",

@@ -1,41 +1,38 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   StyleSheet,
-  Dimensions,
+  Button,
   Pressable,
   Text,
   Platform,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import EmergencyButtonUnpressed from "../../../assets/svgs/emergencyPage/EmergencyButtonUnpressed";
-
 import EmergencyButton from "../../EmergencyButton";
-
 import { windowHeight, windowWidth, mainGradient } from "../../../css/styles";
-import { userID } from "../../../consts";
-import { deleteValue } from "../../../authentication";
+import { useNavigation } from "@react-navigation/native";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { MainNavigationParams, response } from "../../../App";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import Constants from "expo-constants";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from "@react-navigation/stack";
-import ResponderPopup from "./ResponderPopup";
+import { NotificationContext } from "../MainContainer";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: true,
+    shouldPlaySound: false,
     shouldSetBadge: false,
   }),
 });
 
 async function registerForPushNotificationsAsync() {
   let token;
-  if (Constants.isDevice) {
+  if (Device.isDevice) {
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
@@ -48,10 +45,9 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    // console.log(token);
+    console.log(token);
   } else {
-    // alert("Must use physical device for Push Notifications");
-    return token;
+    alert("Must use physical device for Push Notifications");
   }
 
   if (Platform.OS === "android") {
@@ -65,41 +61,36 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 export default function EmergencyButtonPage() {
+  const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const [token, setToken] = useState("");
   const notificationListener = useRef();
   const responseListener = useRef();
-  const navigation =
-    useNavigation<StackNavigationProp<{ ResponderPopup: undefined }>>();
-  const Stack = createStackNavigator<{ ResponderPopup: undefined }>();
+  const context = useContext(NotificationContext);
+
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setToken(token));
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
+    // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) =>
-        setNotification(notification)
-      );
+      Notifications.addNotificationReceivedListener((notification) => {});
 
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("getting things from emergency page");
+        console.log(response);
+        context.setNotification(response.notification.request.content.data);
         navigation.navigate("ResponderPopup");
       });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Stack.Navigator>
-        <Stack.Screen name="ResponderPopup" component={ResponderPopup} />
-      </Stack.Navigator>
+  const navigation =
+    useNavigation<BottomTabNavigationProp<MainNavigationParams>>();
 
+  return (
+    
+    <View style={styles.container}>
       {/* <LinearGradient colors={mainGradient}/> */}
       <EmergencyButton />
       {/* <LinearGradient colors={mainGradient} style={styles.background}>
