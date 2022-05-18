@@ -15,8 +15,21 @@ const ResponderPopup = () => {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
 
-  const getVictimLocation = async () => {
+  const confirmRespond = async () => {
     const responderID = await SecureStore.getItemAsync(userID);
+    console.log(JSON.stringify({
+      location: {
+        type: "Point",
+        coordinates: [0.0, 0.0],
+      },
+      last_updated: Date.now(),
+      country: "string",
+      userID: notification.userID,
+      responderID: responderID,
+      resolved: false,
+      status: "accepted",
+    }),);
+  
     fetch(
       "https://bpr-api.azurewebsites.net/accept_alert/?_id=" + notification._id,
       {
@@ -24,16 +37,20 @@ const ResponderPopup = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           location: {
-            type: "string",
-            coordinates: [0, 0],
+            type: "Point",
+            coordinates: [0.0, 0.0],
           },
           last_updated: Date.now(),
           country: "string",
-          userID: "string",
+          userID: notification.userID,
           responderID: responderID,
-          resolved: true,
-          status: "accetped",
+          resolved: false,
+          status: "accepted",
         }),
+      }
+    ).then(
+      (response) => {
+        console.log(response.status);
       }
     ).catch((err) => {
       console.log(err);
@@ -42,7 +59,7 @@ const ResponderPopup = () => {
   const pressingTheButton = async () => {
     if(respond === "Respond"){
      setRespond("Finished");
-     getVictimLocation();
+     confirmRespond();
     }else{
       setRespond("No request yet");
       setLatitude(0);
