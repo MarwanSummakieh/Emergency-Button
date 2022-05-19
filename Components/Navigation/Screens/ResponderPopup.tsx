@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  Button,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { windowWidth, windowHeight } from "../../MapViewComponent";
 import { NotificationContext } from "../MainContainer";
@@ -17,19 +25,21 @@ const ResponderPopup = () => {
 
   const confirmRespond = async () => {
     const responderID = await SecureStore.getItemAsync(userID);
-    console.log(JSON.stringify({
-      location: {
-        type: "Point",
-        coordinates: [0.0, 0.0],
-      },
-      last_updated: Date.now(),
-      country: "string",
-      userID: notification.userID,
-      responderID: responderID,
-      resolved: false,
-      status: "accepted",
-    }),);
-  
+    console.log(
+      JSON.stringify({
+        location: {
+          type: "Point",
+          coordinates: [0.0, 0.0],
+        },
+        last_updated: Date.now(),
+        country: "string",
+        userID: notification.userID,
+        responderID: responderID,
+        resolved: false,
+        status: "accepted",
+      })
+    );
+
     fetch(
       "https://bpr-api.azurewebsites.net/accept_alert/?_id=" + notification._id,
       {
@@ -48,25 +58,25 @@ const ResponderPopup = () => {
           status: "accepted",
         }),
       }
-    ).then(
-      (response) => {
+    )
+      .then((response) => {
         console.log(response.status);
-      }
-    ).catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const pressingTheButton = async () => {
-    if(respond === "Respond"){
-     setRespond("Finished");
-     confirmRespond();
-    }else{
+    if (respond === "Respond") {
+      setRespond("Finished");
+      confirmRespond();
+    } else {
       setRespond("No request yet");
       setLatitude(0);
       setLongitude(0);
       context.setNotification({});
     }
-  }
+  };
   useEffect(() => {
     if (notification.location !== undefined) {
       setRespond("Respond");
@@ -74,7 +84,9 @@ const ResponderPopup = () => {
       setLongitude(notification.location.coordinates[0]);
     }
   }, [notification]);
-  useEffect(() => {console.log("trrriiiggeer")}, [latitude]);
+  useEffect(() => {
+    console.log("trrriiiggeer");
+  }, [latitude]);
   return (
     <View style={styles.centeredView}>
       <View style={styles.centeredView}>
@@ -97,30 +109,31 @@ const ResponderPopup = () => {
             }}
           />
         </MapView>
+        <Pressable
+            disabled={respond === "No request yet"}
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => {
+              pressingTheButton();
+            }}
+          >
+            <Text style={styles.textStyle}>{respond}</Text>
+          </Pressable>
       </View>
-      <Pressable
-        disabled={respond === "No request yet"}
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => {
-           pressingTheButton();
-        }}
-      >
-        <Text style={styles.textStyle}>{respond}</Text>
-      </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   map: {
-    width: windowWidth * 0.97,
-    height: 0.65 * windowHeight,
+    width: windowWidth,
+    height: windowHeight * 0.8,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+    backgroundColor: "rgba(52, 170, 252, 1)"
   },
   modalView: {
     margin: 20,
@@ -138,13 +151,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    height: windowHeight * 0.1,
-    width: windowWidth * 0.8,
+    height: windowHeight * 0.06,
+    width: windowWidth ,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
     borderRadius: 20,
     padding: 10,
+    margin: 10,
     elevation: 2,
   },
   finishButton: {
@@ -158,10 +172,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   buttonOpen: {
-    backgroundColor: "#F194FF",
+    backgroundColor: "blue",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "blue",
   },
 
   textStyle: {

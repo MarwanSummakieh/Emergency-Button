@@ -138,7 +138,7 @@ export default function MainContainer() {
             }}
           >
             <Tab.Screen
-              name="ResponderPopup"
+              name="Respond"
               component={ResponderPopup}
               options={{
                 tabBarLabel: "Respond",
