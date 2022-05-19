@@ -25,7 +25,7 @@ const Tab = createBottomTabNavigator<MainNavigationParams>();
 
 export const NotificationContext = createContext({
   notification: {},
-  setNotification: () => {},
+  setNotification: (prop) => {},
 });
 
 async function registerForPushNotificationsAsync() {

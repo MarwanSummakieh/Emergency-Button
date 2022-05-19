@@ -122,7 +122,7 @@ export default function App() {
 
 	const authContext = useMemo(
 		() => ({
-			signInWithEmail: async (data: any) => {
+			signInWithEmail: (data: any) => {
 				signInWithEmailAndPassword(
 					firebaseAuth,
 					data.mail,
@@ -132,34 +132,38 @@ export default function App() {
 						save(userID, response.user.uid);
 						save(userRefreshToken, response.user.refreshToken);
 						alert("Sign in Successful");
-						// console.log(response);
 						dispatch({
 							type: "SIGN_IN",
 							token: response.user.uid
 						});
 					})
 					.catch((error) => {
+						if(error.code === "auth/user-not-found"){
 						alert("Wrong login information provided.");
+						}else{
+							alert("network error");
+						}
 						//Whatever else when wrong credentials are used.
 					});
 			},
 
 			signOut: () => dispatch({ type: "SIGN_OUT" }),
 
-			signUpWithEmail: async (data: any) => {
+			signUpWithEmail: (data: any) => {
 				createUserWithEmailAndPassword(
 					firebaseAuth,
 					data.mail,
 					data.password
 				)
 					.then((response) => {
-						// console.log(response);
 						save(userRefreshToken, response.user.refreshToken);
 						save(userID, response.user.uid);
 						dispatch({ type: "SIGN_IN", token: response.user.uid });
 					})
 					.catch((error) => {
-						alert("An account with this email already exists. Try logging in.");
+						if(error.code === "auth/email-already-in-use"){
+							alert("Email already in use.");
+						}
 					});
 			},
 
