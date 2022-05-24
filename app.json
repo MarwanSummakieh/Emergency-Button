@@ -4,6 +4,7 @@
     "slug": "bachelors-project",
     "owner": "bpr",
     "version": "1.0.0",
+    "Scheme" : "bprApp",
     "orientation": "portrait",
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -15,6 +16,19 @@
       "supportsTablet": true
     },
     "android": {
+      "useNextNotificationsApi": true,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [{
+            "scheme": "your-scheme"
+          }],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF"
       },

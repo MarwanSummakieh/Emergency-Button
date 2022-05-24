@@ -53,15 +53,6 @@ export default function FrontPage() {
 						<Text style={styles.buttonText}>SIGN IN</Text>
 					</View>
 				</Pressable>
-				<Pressable
-					onPress={() => {
-						navigation.navigate("MainContainer", {
-							screen: "Emergency"
-						});
-					}}
-				>
-					<Text>map</Text>
-				</Pressable>
 			</View>
 		</>
 	);
