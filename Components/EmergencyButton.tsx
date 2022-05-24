@@ -21,6 +21,7 @@ import { userID } from "../consts";
 import Constants from "expo-constants";
 
 import { windowHeight, windowWidth, mainGradient } from "../css/styles";
+import { getValueFor } from "../authentication";
 
 async function messageSentNotification() {
   await Notifications.scheduleNotificationAsync({

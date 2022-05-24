@@ -4,7 +4,7 @@ async function save(key: string, value: string) {
 	await SecureStore.setItemAsync(key, value);
 }
 
-async function getValueFor(key: string): Promise<any> {
+async function getValueFor(key: string): Promise<string> {
 	const item = await SecureStore.getItemAsync(key);
 	
 	if (typeof item === "string" && item.length > 1) {
